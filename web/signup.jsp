@@ -15,7 +15,8 @@
     <body>
         <div id="container">
             <h1>Sign Up</h1>
-            <form id="form" action="signup">
+            <span class="error">${requestScope.error}</span>
+            <form id="form" action="signup" method="POST">
                 <div class="form-control">
                     <input id="username" type="text" name="fullname" placeholder="Fullname">
                 </div>
