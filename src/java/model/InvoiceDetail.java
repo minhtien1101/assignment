@@ -1,14 +1,24 @@
 
 package model;
 
-public class InvoiceDetail {
+ class InvoiceDetail {
+    private Account account;
     private Invoice invoice;
-    private ProductDetail proDetail;
-    private int quantity;
-    private float buyPrice;
-    private int discount;
+    private InvoiceProduct invoiceProduct;
+    private Product product;
+    private Dimension dimension;
+    private ProductDetail productDetail;
+    private Agency agency;
 
     public InvoiceDetail() {
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public Invoice getInvoice() {
@@ -19,36 +29,45 @@ public class InvoiceDetail {
         this.invoice = invoice;
     }
 
-    public ProductDetail getProDetail() {
-        return proDetail;
+    public InvoiceProduct getInvoiceProduct() {
+        return invoiceProduct;
     }
 
-    public void setProDetail(ProductDetail proDetail) {
-        this.proDetail = proDetail;
+    public void setInvoiceProduct(InvoiceProduct invoiceProduct) {
+        this.invoiceProduct = invoiceProduct;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public float getBuyPrice() {
-        return buyPrice;
+    public Dimension getDimension() {
+        return dimension;
     }
 
-    public void setBuyPrice(float buyPrice) {
-        this.buyPrice = buyPrice;
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 
-    public int getDiscount() {
-        return discount;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
- 
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
+    
+    
 }

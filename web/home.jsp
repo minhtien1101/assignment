@@ -74,15 +74,14 @@
                 <!-- insert -->
                 <div class="insert">
                     <form action="" method="post">
-                        <div>Customer <input type="text"></div>
-                        <div>Name Material <input type="text"></div>
-                        <div>Order Date <input type="date"></div>
+                        <div>Buyer<input type="text"></div>
+                        <div>Name Product <input type="text"></div>
+                        <div>Dimension Product <input type="text"></div>
                         <div>Ship Date <input type="date"></div>
                         <div>Quantity <input type="text"></div>
                         <div>Amount <input type="text"></div>
-                        <div>Pay <input type="text"></div>
+                        <div>Paid<input type="text"></div>
                         <div>Owed <input type="text"></div>
-                        <div>Seller <input type="text"></div>
                         <input type="submit" value="Save">
                     </form>
                 </div>
