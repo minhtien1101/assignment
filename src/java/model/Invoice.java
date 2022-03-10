@@ -5,8 +5,7 @@ import java.sql.Date;
 
 public class Invoice {
     private int id;
-    private Date orderDate;
-    private Date shipDate;
+    private Date date;
     private float amount;
     private float paid;
     private float owed;
@@ -14,6 +13,8 @@ public class Invoice {
     private Account account;
 
     public Invoice() {
+        agency = new Agency();
+        account = new Account();
     }
 
     public int getId() {
@@ -24,20 +25,13 @@ public class Invoice {
         this.id = id;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+
+    public Date getDate() {
+        return date;
     }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public Date getShipDate() {
-        return shipDate;
-    }
-
-    public void setShipDate(Date shipDate) {
-        this.shipDate = shipDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public float getAmount() {

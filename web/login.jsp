@@ -27,7 +27,7 @@
                 <div class="form-submit">
                     <input type="submit" value="Login"/>
                 </div>
-                <div class="sign-up">Not a account? <a href="signup">Sign Up</a></div>
+                <div class="sign-up">Not a account? <a href="signup">SignUp</a></div>
             </form>
         </div>
     </body>

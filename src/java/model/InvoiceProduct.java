@@ -9,6 +9,8 @@ public class InvoiceProduct {
     private int discount;
 
     public InvoiceProduct() {
+        invoice = new Invoice();
+        proDetail = new ProductDetail();
     }
 
     public Invoice getInvoice() {

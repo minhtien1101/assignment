@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/DELL/Desktop/Exercise/assignment/src/java/controller/HomeController.java</file>
-            <file>file:/C:/Users/DELL/Desktop/Exercise/assignment/src/java/dal/HomeDBContext.java</file>
-            <file>file:/C:/Users/DELL/Desktop/Exercise/assignment/src/java/dal/DBContext.java</file>
-            <file>file:/C:/Users/DELL/Desktop/Exercise/assignment/web/home.jsp</file>
-            <file>file:/C:/Users/DELL/Desktop/Exercise/assignment/src/java/model/InvoiceDetail.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -1,7 +1,16 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
- class InvoiceDetail {
+/**
+ *
+ * @author DELL
+ */
+public class DetailInvoice {
+
     private Account account;
     private Invoice invoice;
     private InvoiceProduct invoiceProduct;
@@ -10,7 +19,14 @@ package model;
     private ProductDetail productDetail;
     private Agency agency;
 
-    public InvoiceDetail() {
+    public DetailInvoice() {
+        account = new Account();
+        invoice = new Invoice();
+        invoiceProduct = new InvoiceProduct();
+        product = new Product();
+        dimension = new Dimension();
+        productDetail = new ProductDetail();
+        agency = new Agency();
     }
 
     public Account getAccount() {
@@ -68,6 +84,4 @@ package model;
     public void setAgency(Agency agency) {
         this.agency = agency;
     }
-    
-    
 }

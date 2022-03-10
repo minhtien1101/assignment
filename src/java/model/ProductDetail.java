@@ -7,6 +7,8 @@ public class ProductDetail {
     private int totalQuantity;
 
     public ProductDetail() {
+        product = new Product();
+        dimension = new Dimension();
     }
 
     public Product getProduct() {
