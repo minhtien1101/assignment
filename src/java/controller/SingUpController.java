@@ -31,7 +31,7 @@ public class SingUpController extends HttpServlet {
         String re_password = request.getParameter("re-password");
         String fullname = request.getParameter("fullname");
         AccountDBContext db = new AccountDBContext();
-        Account acc = db.getAccount(username, password);
+        Account acc = db.getAccountByUsername(username);
         if (password.equals(re_password)) {
             if(acc != null) {
                 request.setAttribute("error", "Account has existed!");
@@ -41,7 +41,7 @@ public class SingUpController extends HttpServlet {
                 response.sendRedirect("login");
             }
         } else {
-            request.setAttribute("error", "Password incorrect!");
+            request.setAttribute("error", "Password and re-password must same together!");
             request.getRequestDispatcher("signup.jsp").forward(request, response);
         }
     }

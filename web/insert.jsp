@@ -24,12 +24,13 @@
         <div class="container">
             <!-- header -->
             <div class="header">
-                <div class="header-title">Quản Lý Nhập Vật Liệu SX Nội Thất</div>
+                <div class="header-title">Quản Lý Nhập Vật Liệu</div>
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
                     <li id="btn-insert"><a href="insert">Insert</a></li>
                     <li id="btn-owed"><a href="owed">Report Owed</a></li>
+                    <li id="btn-depot"><a href="#">Depot</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -48,25 +49,85 @@
             <div class="content">               
                 <!-- insert -->
                 <div style="display:block;" id="insert" class="insert">
-                    <form action="insert" method="POST">
-<!--                        <div>Buyer<input type="text"></div>
-                        <div>Name Product <input type="text"></div>
-                        <div>Dimension Product <input type="text"></div>
-                        <div>Date <input type="date"></div>
-                        <div>Quantity <input type="text"></div>
-                        <div>Amount <input type="text"></div>
-                        <div>Paid<input type="text"></div>
-                        <div>Owed <input type="text"></div>-->
-                        <select>
-                            <c:forEach items="${requestScope.products}" var="p">
-                            <option>${p.name}</option>       
-                            </c:forEach>
-                        </select>
-                        <input type="submit" value="Save">
+                    <form action="insert" method="POST">                      
+                        <table>
+                            <tr>
+                                <td>Order by</td>
+                                <td>
+                                    <select name="idBuyer">
+                                        <c:forEach items="${requestScope.buyers}" var="b">
+                                            <option value="${b.id}">${b.name}${" "} ${b.dob}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <button type="button">New Buyer</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Product</td>
+                                <td>
+                                    <select name="idProduct">
+                                        <c:forEach items="${requestScope.products}" var="p">
+                                            <option value="${p.id}">${p.name}</option>       
+                                        </c:forEach>
+                                    </select>
+                                    <button type="button">New Product</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dimension</td>
+                                <td>
+                                    <select name="idDimension">
+                                        <c:forEach items="${requestScope.dimensions}" var="d">
+                                            <option value="${d.id}">${d.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <button type="button">New Dimension</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td><input type="datetime-local" name="date" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Price</td>
+                                <td><input type="number" name="buyPrice" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Quantity</td>
+                                <td><input type="number" name="quantity" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Amount</td>
+                                <td><input type="number" name="amount" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Paid</td>
+                                <td><input type="number" name="paid" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Owed</td>
+                                <td><input type="text" name="owed" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Name Agent</td>
+                                <td>
+                                    <select name="idAgency">
+                                        <c:forEach items="${requestScope.agencies}" var="a">
+                                            <option value="${a.id}">${a.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <button type="button">New Agent</button>
+                                </td>
+                            </tr>
+                        </table>
+                        <input style="margin-top: 10px" type="submit" value="Save">
                     </form>
                 </div>              
             </div>
         </div>
+        <script>
+            
+        </script>
     </body>
 </html>
 

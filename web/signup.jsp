@@ -18,16 +18,16 @@
             <span class="error">${requestScope.error}</span>
             <form id="form" action="signup" method="POST">
                 <div class="form-control">
-                    <input id="username" type="text" name="fullname" placeholder="Fullname">
+                    <input id="username" type="text" name="fullname" placeholder="Fullname" required>
                 </div>
                 <div class="form-control">
-                    <input id="username" type="text" name="username" placeholder="Username">
+                    <input id="username" type="text" name="username" placeholder="Username" required>
                 </div>
                 <div class="form-control">
-                    <input id="password" type="password" name="password" placeholder="Password">
+                    <input id="password" type="password" name="password" placeholder="Password" required>
                 </div>
                 <div class="form-control">
-                    <input id="password" type="password" name="re-password" placeholder="Re-password">
+                    <input id="password" type="password" name="re-password" placeholder="Re-password" required>
                 </div>
                 <div class="form-submit">
                     <input type="submit" value="Sign Up"/>

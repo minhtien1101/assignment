@@ -1,20 +1,22 @@
-
 package model;
 
 import java.sql.Date;
 
 public class Invoice {
+
     private int id;
     private Date date;
-    private float amount;
-    private float paid;
-    private float owed;
+    private long amount;
+    private long paid;
+    private long owed;
     private Agency agency;
     private Account account;
+    private Buyer buyer;
 
     public Invoice() {
         agency = new Agency();
         account = new Account();
+        buyer = new Buyer();
     }
 
     public int getId() {
@@ -25,7 +27,6 @@ public class Invoice {
         this.id = id;
     }
 
-
     public Date getDate() {
         return date;
     }
@@ -34,27 +35,27 @@ public class Invoice {
         this.date = date;
     }
 
-    public float getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
-    public float getPaid() {
+    public long getPaid() {
         return paid;
     }
 
-    public void setPaid(float paid) {
+    public void setPaid(long paid) {
         this.paid = paid;
     }
 
-    public float getOwed() {
+    public long getOwed() {
         return owed;
     }
 
-    public void setOwed(float owed) {
+    public void setOwed(long owed) {
         this.owed = owed;
     }
 
@@ -73,5 +74,12 @@ public class Invoice {
     public void setAccount(Account account) {
         this.account = account;
     }
-    
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
 }

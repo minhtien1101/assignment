@@ -13,12 +13,12 @@ public class AgencyDBContext extends DBContext{
     public ArrayList<Agency> getAgencies() {
         ArrayList<Agency> agencies = new ArrayList<>();
         try {
-            String sql = "Select aid, name, phone, address from Agency";
+            String sql = "Select id, name, phone, address from Agency";
             PreparedStatement stm = con.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while(rs.next()) {
                 Agency a = new Agency();
-                a.setId(rs.getInt("aid"));
+                a.setId(rs.getInt("id"));
                 a.setName(rs.getString("name"));
                 a.setPhone(rs.getString("phone"));
                 a.setAddress(rs.getString("address"));

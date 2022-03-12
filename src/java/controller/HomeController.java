@@ -1,7 +1,8 @@
 
 package controller;
 
-import dal.HomeDBContext;
+import dal.BuyerDBContext;
+import dal.InvoiceDetailDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -10,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Buyer;
 import model.DetailInvoice;
 
 /**
@@ -23,21 +25,43 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
         String dateFrom_raw = request.getParameter("dateFrom");
         String dateTo_raw = request.getParameter("dateTo");
-        boolean check = false;
+        String index = request.getParameter("page");   
+        int idBuyer;
+        try {
+            idBuyer = Integer.parseInt(request.getParameter("idBuyer"));
+        } catch (NumberFormatException e) {
+            idBuyer = -1;
+        }
+        
+        if(index == null || index.trim().length() == 0) {
+            index = "1";
+        }
         Date dateFrom = null;
         Date dateTo = null;
         if(dateFrom_raw == null || dateFrom_raw.trim().length() == 0) {
             dateFrom = null;
         } else {
             dateFrom = Date.valueOf(dateFrom_raw);
+            request.setAttribute("dateFrom", dateFrom);
         }
         if(dateTo_raw == null || dateTo_raw.trim().length() == 0 ) {
             dateTo = null;
         } else {
             dateTo = Date.valueOf(dateTo_raw);
+            request.setAttribute("dateTo", dateTo);
         }
-        HomeDBContext db = new HomeDBContext();
-        ArrayList<DetailInvoice> detailInvoices = db.getInvoiceDetail();
+        int pageIndex = Integer.parseInt(index);
+        int pageSize = 5;
+        BuyerDBContext buyerDB = new BuyerDBContext();
+        ArrayList<Buyer> buyers = buyerDB.getBuyers();
+        InvoiceDetailDBContext invoiceDetailDB = new InvoiceDetailDBContext();
+        ArrayList<DetailInvoice> detailInvoices = invoiceDetailDB.getInvoiceDetail(idBuyer,dateFrom, dateTo, pageIndex, pageSize);
+        int count = invoiceDetailDB.count(dateFrom, dateTo, idBuyer);
+        
+        request.setAttribute("pageIndex", pageIndex);
+        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("buyers", buyers);
+        request.setAttribute("idBuyer", idBuyer);
         request.setAttribute("detailInvoices", detailInvoices);
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
