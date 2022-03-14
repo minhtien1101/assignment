@@ -34,14 +34,14 @@ public class SingUpController extends HttpServlet {
         Account acc = db.getAccountByUsername(username);
         if (password.equals(re_password)) {
             if(acc != null) {
-                request.setAttribute("error", "Account has existed!");
+                request.setAttribute("error", "Username has existed!");
                 request.getRequestDispatcher("signup.jsp").forward(request, response);
             } else {
                 db.insertAccount(username, password, fullname);
                 response.sendRedirect("login");
             }
         } else {
-            request.setAttribute("error", "Password and re-password must same together!");
+            request.setAttribute("error", "Re-password incorrect!");
             request.getRequestDispatcher("signup.jsp").forward(request, response);
         }
     }

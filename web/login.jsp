@@ -18,7 +18,7 @@
             <span class="error">${requestScope.msgErr}</span>
             <form id="form" action="login" method="POST">
                 <div class="form-control">
-                    <input id="username" name="username" type="text" placeholder="UserName"/>
+                    <input id="username" name="username" type="text" placeholder="Username"/>
                 </div>
                 <div class="form-control">
                     <input id="password" name="password" type="password" placeholder="Password"/>

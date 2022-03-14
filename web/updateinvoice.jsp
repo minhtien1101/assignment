@@ -9,8 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Update</title>
+        <title>Update Invoice</title>
     </head>
     <body>
+        <form>
+            
+        </form>
     </body>
 </html>

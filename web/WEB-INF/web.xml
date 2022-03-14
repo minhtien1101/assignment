@@ -14,7 +14,7 @@
     </servlet>
     <servlet>
         <servlet-name>InsertController</servlet-name>
-        <servlet-class>controller.InsertController</servlet-class>
+        <servlet-class>controller.InsertInvoiceController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ReportOwedController</servlet-name>
@@ -23,6 +23,22 @@
     <servlet>
         <servlet-name>DepotController</servlet-name>
         <servlet-class>controller.DepotController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertBuyerController</servlet-name>
+        <servlet-class>controller.InsertBuyerController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertProductController</servlet-name>
+        <servlet-class>controller.InsertProductController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertDimensionController</servlet-name>
+        <servlet-class>controller.InsertDimensionController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertAgencyController</servlet-name>
+        <servlet-class>controller.InsertAgencyController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -47,6 +63,22 @@
     <servlet-mapping>
         <servlet-name>DepotController</servlet-name>
         <url-pattern>/depot</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertBuyerController</servlet-name>
+        <url-pattern>/buyer/insert</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertProductController</servlet-name>
+        <url-pattern>/product/insert</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertDimensionController</servlet-name>
+        <url-pattern>/dimension/insert</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertAgencyController</servlet-name>
+        <url-pattern>/agency/insert</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

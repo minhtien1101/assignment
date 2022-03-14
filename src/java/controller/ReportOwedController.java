@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package controller;
 
 import dal.InvoiceDetailDBContext;
@@ -23,6 +19,12 @@ public class ReportOwedController extends HttpServlet {
             throws ServletException, IOException {
         String dateFrom_raw = request.getParameter("dateFrom");
         String dateTo_raw = request.getParameter("dateTo");
+        int idBuyer;
+        try {
+            idBuyer = Integer.parseInt(request.getParameter("idBuyer"));
+        } catch (NumberFormatException e) {
+            idBuyer = -1;
+        }
         int pageIndex;
         int pageSize = 5;
         try {
@@ -42,14 +44,16 @@ public class ReportOwedController extends HttpServlet {
         } else {
             dateTo = Date.valueOf(dateTo_raw);
         }
-
         InvoiceDetailDBContext db = new InvoiceDetailDBContext();
-        ArrayList<DetailInvoice> invoicesDetailOwed = db.getAllInvoiceOwed(dateFrom, dateTo);
+        int count = db.countOwedInvoice(dateFrom, dateTo, idBuyer);
+        int totalPage = (count % pageSize == 0)?(count/pageSize):((count/pageSize)+1);
+        ArrayList<DetailInvoice> invoicesDetailOwed = db.getInvoicesOwed(idBuyer, dateFrom, dateTo, pageIndex, pageSize);
         request.setAttribute("invoicesDetailOwed", invoicesDetailOwed);
         request.setAttribute("dateFrom", dateFrom);
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("pageIndex", pageIndex);
-        request.getRequestDispatcher("reportowed.jsp").forward(request, response);
+        request.setAttribute("totalPage", totalPage);
+        request.getRequestDispatcher("reportowedinvoice.jsp").forward(request, response);
     }
 
     @Override

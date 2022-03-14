@@ -22,7 +22,6 @@
     </head>
     <body>
         <div class="container">
-            <!-- header -->
             <div class="header">
                 <div class="header-title">Quản Lý Nhập Vật Liệu</div>
 
@@ -30,7 +29,7 @@
                     <li id="btn-search"><a href="home">Home</a></li>
                     <li id="btn-insert"><a href="insert">Insert</a></li>
                     <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="#">Depot</a></li>
+                    <li id="btn-depot"><a href="depot">Depot</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -45,10 +44,8 @@
                     </ul>
                 </div>
             </div>
-            <!-- body -->
             <div class="content">               
-                <!-- insert -->
-                <div style="display:block;" id="insert" class="insert">
+                <div id="insert" class="insert">
                     <form action="insert" method="POST">                      
                         <table>
                             <tr>
@@ -56,10 +53,10 @@
                                 <td>
                                     <select name="idBuyer">
                                         <c:forEach items="${requestScope.buyers}" var="b">
-                                            <option value="${b.id}">${b.name}${" "} ${b.dob}</option>
+                                            <option value="${b.id}">${b.name}</option>
                                         </c:forEach>
                                     </select>
-                                    <button type="button">New Buyer</button>
+                                    <button type="button"><a href="buyer/insert">New Buyer</a></button>
                                 </td>
                             </tr>
                             <tr>
@@ -70,7 +67,7 @@
                                             <option value="${p.id}">${p.name}</option>       
                                         </c:forEach>
                                     </select>
-                                    <button type="button">New Product</button>
+                                    <button type="button"><a href="product/insert">New Product</a></button>
                                 </td>
                             </tr>
                             <tr>
@@ -81,20 +78,24 @@
                                             <option value="${d.id}">${d.name}</option>
                                         </c:forEach>
                                     </select>
-                                    <button type="button">New Dimension</button>
+                                    <button type="button"><a href="dimension/insert">New Dimension</a></button>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Date</td>
-                                <td><input type="datetime-local" name="date" required/></td>
+                                <td><input type="date" name="date" required/></td>
                             </tr>
                             <tr>
                                 <td>Price</td>
-                                <td><input type="number" name="buyPrice" required/></td>
+                                <td><input type="number" name="buyPrice" min="0" required/></td>
                             </tr>
                             <tr>
                                 <td>Quantity</td>
-                                <td><input type="number" name="quantity" required/></td>
+                                <td><input type="number" name="quantity" min="0" required/></td>
+                            </tr>
+                            <tr>
+                                <td>Discount</td>
+                                <td><input type="number" name="discount" min="0" max="100" required/></td>
                             </tr>
                             <tr>
                                 <td>Amount</td>
@@ -102,21 +103,21 @@
                             </tr>
                             <tr>
                                 <td>Paid</td>
-                                <td><input type="number" name="paid" required/></td>
+                                <td><input type="number" name="paid" min="0" required/></td>
                             </tr>
                             <tr>
                                 <td>Owed</td>
-                                <td><input type="text" name="owed" required/></td>
+                                <td><input type="number" name="owed" min="0"  required/></td>
                             </tr>
                             <tr>
-                                <td>Name Agent</td>
+                                <td>Name Agency</td>
                                 <td>
                                     <select name="idAgency">
                                         <c:forEach items="${requestScope.agencies}" var="a">
                                             <option value="${a.id}">${a.name}</option>
                                         </c:forEach>
                                     </select>
-                                    <button type="button">New Agent</button>
+                                    <button type="button"><a href="agency/insert">New Agency</a></button>
                                 </td>
                             </tr>
                         </table>

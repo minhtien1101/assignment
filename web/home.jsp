@@ -24,7 +24,7 @@
                     <li id="btn-search"><a href="home">Home</a></li>
                     <li id="btn-insert"><a href="insert">Insert</a></li>
                     <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="#">Depot</a></li>
+                    <li id="btn-depot"><a href="depot">Depot</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -69,13 +69,14 @@
                             <td>Name Agent</td>
                             <td>Phone</td>
                             <td>Address</td>
+                            <td></td>
                         </tr>
 
                         <c:forEach items="${requestScope.detailInvoices}" var="d">
                             <tr>
                                 <td>${d.invoice.buyer.name}</td>
-                                <td>${d.productDetail.product.name}</td>
-                                <td>${d.productDetail.dimension.name}</td>
+                                <td>${d.invoiceProduct.productDetail.product.name}</td>
+                                <td>${d.invoiceProduct.productDetail.dimension.name}</td>
                                 <td>${d.invoice.date}</td>
                                 <td>${d.invoiceProduct.buyPrice}</td>
                                 <td>${d.invoiceProduct.quantity}</td>
@@ -85,13 +86,18 @@
                                 <td>${d.invoice.agency.name}</td>
                                 <td>${d.invoice.agency.phone}</td>
                                 <td>${d.invoice.agency.address}</td>
-
+                                <td>
+                                    <a href="update">Update</a> | <a href="#">Delete</a></td>
                             </tr>
                         </c:forEach>
                     </table>
-                    <div class="page"><input id="pageIndex" type="text" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/10</div>
+                        <div ${(requestScope.totalPage == 1)?"style=\"display:none;\"":""} class="page">
+                            <input ${(requestScope.totalPage == 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
+                                   onkeyup="keyUp(event)">/${requestScope.totalPage}
+                        </div>
                 </div>
             </div>
+        </div>
             <script>
                 function keyUp(event) {
                     if (event.keyCode === 13) {

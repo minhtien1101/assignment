@@ -24,7 +24,7 @@
                     <li id="btn-search"><a href="home">Home</a></li>
                     <li id="btn-insert"><a href="insert">Insert</a></li>
                     <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="#">Depot</a></li>
+                    <li id="btn-depot"><a href="depot">Depot</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -46,6 +46,13 @@
                     <form action="owed" method="get">
                         <div>From <input type="date" value="${requestScope.dateFrom}" name="dateFrom"></div>
                         <div>To <input type="date" value="${requestScope.dateTo}" name="dateTo"></div>
+                        <div>Buyer 
+                            <select>
+                                <option value="-1">All</option>
+                                
+                            </select>
+                        </div>
+                        
                         <input type="submit" value="Search">
                     </form>
                     <table>

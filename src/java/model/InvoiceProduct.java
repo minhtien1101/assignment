@@ -3,14 +3,14 @@ package model;
 
 public class InvoiceProduct {
     private Invoice invoice;
-    private ProductDetail proDetail;
+    private ProductDetail productDetail;
     private int quantity;
     private long buyPrice;
     private int discount;
 
     public InvoiceProduct() {
         invoice = new Invoice();
-        proDetail = new ProductDetail();
+        productDetail = new ProductDetail();
     }
 
     public Invoice getInvoice() {
@@ -21,12 +21,12 @@ public class InvoiceProduct {
         this.invoice = invoice;
     }
 
-    public ProductDetail getProDetail() {
-        return proDetail;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setProDetail(ProductDetail proDetail) {
-        this.proDetail = proDetail;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
 
     public int getQuantity() {

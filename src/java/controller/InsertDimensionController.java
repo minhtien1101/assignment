@@ -5,43 +5,39 @@
  */
 package controller;
 
-import dal.AccountDBContext;
+import dal.DimensionDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Account;
+import model.Dimension;
 
-public class LoginController extends HttpServlet {
+
+public class InsertDimensionController extends HttpServlet {
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        request.getRequestDispatcher("../insertdimension.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        AccountDBContext db = new AccountDBContext();
-        Account acc = db.getAccount(username, password);
-        if(acc != null) {
-            request.getSession().setAttribute("account", acc);
-            response.sendRedirect("home");
-        } else {
-            request.setAttribute("msgErr", "Username or password wrong!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-        
+        String name =  request.getParameter("name");
+        Dimension dimension = new Dimension();
+        dimension.setName(name);
+        DimensionDBContext db = new DimensionDBContext();
+        db.insertDimension(dimension);
+        response.sendRedirect("../insert");
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
 
 }

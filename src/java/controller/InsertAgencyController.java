@@ -5,43 +5,46 @@
  */
 package controller;
 
-import dal.AccountDBContext;
+import dal.AgencyDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Account;
+import model.Agency;
 
-public class LoginController extends HttpServlet {
+/**
+ *
+ * @author DELL
+ */
+public class InsertAgencyController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+        request.getRequestDispatcher("../insertagency.jsp").forward(request, response);
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        AccountDBContext db = new AccountDBContext();
-        Account acc = db.getAccount(username, password);
-        if(acc != null) {
-            request.getSession().setAttribute("account", acc);
-            response.sendRedirect("home");
-        } else {
-            request.setAttribute("msgErr", "Username or password wrong!");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        }
-        
+        String name = request.getParameter("name");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");
+        Agency agency = new Agency();
+        agency.setName(name);
+        agency.setPhone(phone);
+        agency.setAddress(address);
+        AgencyDBContext db = new AgencyDBContext();
+        db.insertAgency(agency);
+        response.sendRedirect("../insert");
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
 
 }

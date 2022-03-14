@@ -1,4 +1,3 @@
-
 package dal;
 
 import java.sql.PreparedStatement;
@@ -9,15 +8,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Dimension;
 
+public class DimensionDBContext extends DBContext {
 
-public class DimensionDBContext extends DBContext{
     public ArrayList<Dimension> getDimensions() {
         ArrayList<Dimension> dimensions = new ArrayList<>();
         try {
             String sql = "Select id, name From Dimension";
             PreparedStatement stm = con.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 Dimension d = new Dimension();
                 d.setId(rs.getInt("id"));
                 d.setName(rs.getString("name"));
@@ -27,5 +26,19 @@ public class DimensionDBContext extends DBContext{
             Logger.getLogger(DimensionDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return dimensions;
+    }
+
+    public void insertDimension(Dimension dimension) {
+        try {
+            String sql = "INSERT INTO [Dimension]\n"
+                    + "           ([name])\n"
+                    + "     VALUES\n"
+                    + "           (?)";
+            PreparedStatement stm = con.prepareStatement(sql);
+            stm.setString(1, dimension.getName());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DimensionDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

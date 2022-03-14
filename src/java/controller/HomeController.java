@@ -14,10 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.Buyer;
 import model.DetailInvoice;
 
-/**
- *
- * @author DELL
- */
+
 public class HomeController extends HttpServlet {
 
     @Override
@@ -57,9 +54,9 @@ public class HomeController extends HttpServlet {
         InvoiceDetailDBContext invoiceDetailDB = new InvoiceDetailDBContext();
         ArrayList<DetailInvoice> detailInvoices = invoiceDetailDB.getInvoiceDetail(idBuyer,dateFrom, dateTo, pageIndex, pageSize);
         int count = invoiceDetailDB.count(dateFrom, dateTo, idBuyer);
-        
+        int totalPage = (count % pageSize == 0)?(count/pageSize):((count/pageSize)+1);
         request.setAttribute("pageIndex", pageIndex);
-        request.setAttribute("pageSize", pageSize);
+        request.setAttribute("totalPage", totalPage);
         request.setAttribute("buyers", buyers);
         request.setAttribute("idBuyer", idBuyer);
         request.setAttribute("detailInvoices", detailInvoices);
