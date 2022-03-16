@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Buyer;
-import model.DetailInvoice;
+import model.InvoiceDetail;
 
 
 public class HomeController extends HttpServlet {
@@ -49,17 +49,20 @@ public class HomeController extends HttpServlet {
         }
         int pageIndex = Integer.parseInt(index);
         int pageSize = 5;
+        
         BuyerDBContext buyerDB = new BuyerDBContext();
         ArrayList<Buyer> buyers = buyerDB.getBuyers();
+        
         InvoiceDetailDBContext invoiceDetailDB = new InvoiceDetailDBContext();
-        ArrayList<DetailInvoice> detailInvoices = invoiceDetailDB.getInvoiceDetail(idBuyer,dateFrom, dateTo, pageIndex, pageSize);
+        ArrayList<InvoiceDetail> invoicesDetail = invoiceDetailDB.getInvoicesDetail(idBuyer,dateFrom, dateTo, pageIndex, pageSize);
+        
         int count = invoiceDetailDB.count(dateFrom, dateTo, idBuyer);
         int totalPage = (count % pageSize == 0)?(count/pageSize):((count/pageSize)+1);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("buyers", buyers);
         request.setAttribute("idBuyer", idBuyer);
-        request.setAttribute("detailInvoices", detailInvoices);
+        request.setAttribute("invoicesDetail", invoicesDetail);
         request.getRequestDispatcher("home.jsp").forward(request, response);
     }
 

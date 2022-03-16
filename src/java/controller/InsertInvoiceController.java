@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.Account;
 import model.Agency;
 import model.Buyer;
-import model.DetailInvoice;
+import model.InvoiceDetail;
 import model.Dimension;
 import model.Product;
 
@@ -81,21 +81,21 @@ public class InsertInvoiceController extends HttpServlet {
         } else {
             totalQuantity = 0;
         }
-        DetailInvoice detailInvoice = new DetailInvoice();
-        detailInvoice.getInvoice().getBuyer().setId(idBuyer);
-        detailInvoice.getInvoice().setDate(date);
-        detailInvoice.getInvoice().setAmount(amount);
-        detailInvoice.getInvoice().setPaid(paid);
-        detailInvoice.getInvoice().setOwed(owed);
-        detailInvoice.getInvoice().getAgency().setId(idAgency);
-        detailInvoice.getInvoice().getAccount().setUsername("admin");
-        detailInvoice.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
-        detailInvoice.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
-        detailInvoice.getInvoiceProduct().setQuantity(quantity);
-        detailInvoice.getInvoiceProduct().setDiscount(discount);
-        detailInvoice.getInvoiceProduct().setBuyPrice(buyPrice);
+        InvoiceDetail invoiceDetail = new InvoiceDetail();
+        invoiceDetail.getInvoice().getBuyer().setId(idBuyer);
+        invoiceDetail.getInvoice().setDate(date);
+        invoiceDetail.getInvoice().setAmount(amount);
+        invoiceDetail.getInvoice().setPaid(paid);
+        invoiceDetail.getInvoice().setOwed(owed);
+        invoiceDetail.getInvoice().getAgency().setId(idAgency);
+        invoiceDetail.getInvoice().getAccount().setUsername("admin");
+        invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
+        invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
+        invoiceDetail.getInvoiceProduct().setQuantity(quantity);
+        invoiceDetail.getInvoiceProduct().setDiscount(discount);
+        invoiceDetail.getInvoiceProduct().setBuyPrice(buyPrice);
         InvoiceDetailDBContext db = new InvoiceDetailDBContext();
-        db.insertInvoice(detailInvoice, isExist, totalQuantity);
+        db.insertInvoice(invoiceDetail, isExist, totalQuantity);
 //        db.insertInvoice(idBuyer, idProduct, idDimension,date, buyPrice, 
 //                quantity, discount, amount, paid, owed, idAgency, "admin", isExist, totalQuantity);
         response.sendRedirect("home");

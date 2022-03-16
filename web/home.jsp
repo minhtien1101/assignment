@@ -16,15 +16,14 @@
     </head>
     <body>
         <div class="container">
-            <!-- header -->
             <div class="header">
                 <div class="header-title">Quản Lý Nhập Vật Liệu</div>
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
-                    <li id="btn-insert"><a href="insert">Insert</a></li>
-                    <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="depot">Depot</a></li>
+                    <li id="btn-insert"><a href="insert">Insert Invoice</a></li>
+                    <li id="btn-owed"><a href="owed">Invoices Owed</a></li>
+                    <li id="btn-warehouse"><a href="warehouse">Warehouse</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -39,9 +38,8 @@
                     </ul>
                 </div>
             </div>
-            <!-- body -->
+                        
             <div class="content">
-                <!-- search -->
                 <div id="search" class="search">
                     <form action="home" method="GET">
                         <div>From <input type="date" value="${requestScope.dateFrom}" name="dateFrom"></div>
@@ -53,7 +51,7 @@
                             </c:forEach>
                         </select>
                         <input type="submit" value="Search">
-                        
+
                     </form>
                     <table>
                         <tr>
@@ -72,7 +70,7 @@
                             <td></td>
                         </tr>
 
-                        <c:forEach items="${requestScope.detailInvoices}" var="d">
+                        <c:forEach items="${requestScope.invoicesDetail}" var="d">
                             <tr>
                                 <td>${d.invoice.buyer.name}</td>
                                 <td>${d.invoiceProduct.productDetail.product.name}</td>
@@ -87,23 +85,37 @@
                                 <td>${d.invoice.agency.phone}</td>
                                 <td>${d.invoice.agency.address}</td>
                                 <td>
-                                    <a href="update">Update</a> | <a href="#">Delete</a></td>
+                                    <a href="update?idinvoice=${d.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}">
+                                        Update
+                                    </a> | 
+                                    <a href="delete?idinvoice=${d.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}" onclick="return deleteInvoice()">
+                                        Delete
+                                    </a>
+                                </td>
                             </tr>
                         </c:forEach>
                     </table>
-                        <div ${(requestScope.totalPage == 1)?"style=\"display:none;\"":""} class="page">
-                            <input ${(requestScope.totalPage == 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
-                                   onkeyup="keyUp(event)">/${requestScope.totalPage}
-                        </div>
+                    <div ${(requestScope.totalPage <= 1)?"style=\"display:none;\"":""} class="page">
+                        <input ${(requestScope.totalPage <= 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
+                                                                                                  onkeyup="keyUp(event)">/${requestScope.totalPage}
+                    </div>
                 </div>
             </div>
         </div>
-            <script>
-                function keyUp(event) {
-                    if (event.keyCode === 13) {
-                        window.location.href = "home?page=" + document.getElementById("pageIndex").value;
-                    }
+        <script>
+            function keyUp(event) {
+                if (event.keyCode === 13) {
+                    window.location.href = "home?page=" + document.getElementById("pageIndex").value;
                 }
-            </script>
+            }
+            function deleteInvoice() {
+                var rs = confirm("Do you want to delete?");
+                if (rs) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        </script>
     </body>
 </html>

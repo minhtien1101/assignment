@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Insert New Buyer</title>
     </head>
     <body>
         <h2>Insert New Buyer</h2>

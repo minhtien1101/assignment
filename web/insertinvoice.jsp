@@ -27,9 +27,9 @@
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
-                    <li id="btn-insert"><a href="insert">Insert</a></li>
-                    <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="depot">Depot</a></li>
+                    <li id="btn-insert"><a href="insert">Insert Invoice</a></li>
+                    <li id="btn-owed"><a href="owed">Invoices Owed</a></li>
+                    <li id="btn-warehouse"><a href="warehouse">Warehouse</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -46,6 +46,7 @@
             </div>
             <div class="content">               
                 <div id="insert" class="insert">
+                    <span style="color: red;" id="msg_err"></span>
                     <form action="insert" method="POST">                      
                         <table>
                             <tr>
@@ -87,27 +88,27 @@
                             </tr>
                             <tr>
                                 <td>Price</td>
-                                <td><input type="number" name="buyPrice" min="0" required/></td>
+                                <td><input id="price" type="number" name="buyPrice" min="0" required/></td>
                             </tr>
                             <tr>
                                 <td>Quantity</td>
-                                <td><input type="number" name="quantity" min="0" required/></td>
+                                <td><input id="quantity" type="number" name="quantity" min="0" required/></td>
                             </tr>
                             <tr>
                                 <td>Discount</td>
-                                <td><input type="number" name="discount" min="0" max="100" required/></td>
+                                <td><input id="discount" type="number" value="0" name="discount" min="0" max="100" required/></td>
                             </tr>
                             <tr>
                                 <td>Amount</td>
-                                <td><input type="number" name="amount" required/></td>
+                                <td><input id="amount" type="number" value="" onclick="getAmount()" min="0" name="amount" required/></td>
                             </tr>
                             <tr>
                                 <td>Paid</td>
-                                <td><input type="number" name="paid" min="0" required/></td>
+                                <td><input id="paid" type="number" name="paid" min="0" required/></td>
                             </tr>
                             <tr>
                                 <td>Owed</td>
-                                <td><input type="number" name="owed" min="0"  required/></td>
+                                <td><input id="owed" type="number" name="owed" min="0" onclick="getOwed()"  required/></td>
                             </tr>
                             <tr>
                                 <td>Name Agency</td>
@@ -121,13 +122,41 @@
                                 </td>
                             </tr>
                         </table>
-                        <input style="margin-top: 10px" type="submit" value="Save">
+                        <input style="margin-top: 10px" type="submit" value="Save" onclick="return submitInvoice()">
                     </form>
                 </div>              
             </div>
         </div>
         <script>
             
+            function getAmount(){
+                var price = document.getElementById("price");
+                var quantity = document.getElementById("quantity");
+                var discount = document.getElementById("discount");
+                var amount = document.getElementById("amount");
+                amount.value = Math.round((price.value * quantity.value) - (price.value * quantity.value*discount.value /100));
+            }   
+            
+            function getOwed() {
+                var amount = document.getElementById("amount");
+                var paid = document.getElementById("paid");
+                var owed = document.getElementById("owed");
+                owed.value = amount.value - paid.value;              
+            }
+            function submitInvoice() {
+                var price = document.getElementById("price");
+                var quantity = document.getElementById("quantity");
+                var discount = document.getElementById("discount");
+                var amount = document.getElementById("amount");
+                var paid = document.getElementById("paid");
+                var owed = document.getElementById("owed");
+                if (paid.value <= amount.value 
+                        && owed.value <= (amount.value - paid.value)) {                  
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         </script>
     </body>
 </html>

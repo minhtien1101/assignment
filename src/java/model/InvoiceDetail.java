@@ -1,11 +1,11 @@
 package model;
 
-public class DetailInvoice {
+public class InvoiceDetail {
 
     private Invoice invoice;
     private InvoiceProduct invoiceProduct;
 
-    public DetailInvoice() {
+    public InvoiceDetail() {
         invoice = new Invoice();
         invoiceProduct = new InvoiceProduct();
     }

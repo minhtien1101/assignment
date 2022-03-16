@@ -18,21 +18,21 @@ public class ProductDetailDBContext extends DBContext {
                     + "d.id as idDimension, d.name as nameDimension, prd.totalQuantity \n"
                     + "from Product p join ProductDetail prd on p.id = prd.idProduct\n"
                     + "join Dimension d on d.id = prd.idDimension\n";
-            if(idProduct != -1) {
+            if (idProduct != -1) {
                 sql += " and p.id = ? ";
             }
-            if(idDimension != -1) {
+            if (idDimension != -1) {
                 sql += " and d.id = ? ";
             }
             sql += " order by p.id ";
             PreparedStatement stm = con.prepareStatement(sql);
-            if(idProduct != -1 && idDimension == -1) {
+            if (idProduct != -1 && idDimension == -1) {
                 stm.setInt(1, idProduct);
             }
-            if(idProduct == -1 && idDimension != -1) {
+            if (idProduct == -1 && idDimension != -1) {
                 stm.setInt(1, idDimension);
             }
-            if(idProduct != -1 && idDimension != -1) {
+            if (idProduct != -1 && idDimension != -1) {
                 stm.setInt(1, idProduct);
                 stm.setInt(2, idDimension);
             }

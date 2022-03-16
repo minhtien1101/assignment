@@ -12,7 +12,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/home.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <title>Depot</title>
+        <title>Warehouse</title>
     </head>
     <body>
 
@@ -22,9 +22,9 @@
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
-                    <li id="btn-insert"><a href="insert">Insert</a></li>
-                    <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="depot">Depot</a></li>
+                    <li id="btn-insert"><a href="insert">Insert Invoice</a></li>
+                    <li id="btn-owed"><a href="owed">Invoices Owed</a></li>
+                    <li id="btn-warehouse"><a href="warehouse">Warehouse</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -41,7 +41,7 @@
             </div>
             <div class="content">
                 <div class="depot">
-                    <form action="depot" method="GET">
+                    <form action="warehouse" method="GET">
                         <div style="text-align: center; margin-bottom: 20px">
                             Product 
                             <select name="idProduct">

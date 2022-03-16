@@ -12,19 +12,18 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/home.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <title>Report Owed</title>
+        <title>Invoices Owed</title>
     </head>
     <body>
         <div class="container">
-            <!-- header -->
             <div class="header">
                 <div class="header-title">Quản Lý Nhập Vật Liệu</div>
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
                     <li id="btn-insert"><a href="insert">Insert</a></li>
-                    <li id="btn-owed"><a href="owed">Report Owed</a></li>
-                    <li id="btn-depot"><a href="depot">Depot</a></li>
+                    <li id="btn-owed"><a href="owed">Invoices Owed</a></li>
+                    <li id="btn-warehouse"><a href="warehouse">Warehouse</a></li>
                 </ul>
 
                 <div class="user-info">
@@ -39,17 +38,17 @@
                     </ul>
                 </div>
             </div>
-            <!-- body -->
             <div class="content">               
-                <!-- report owed -->
                 <div id="owed" class="owed">
                     <form action="owed" method="get">
                         <div>From <input type="date" value="${requestScope.dateFrom}" name="dateFrom"></div>
                         <div>To <input type="date" value="${requestScope.dateTo}" name="dateTo"></div>
                         <div>Buyer 
-                            <select>
+                            <select name="idBuyer">
                                 <option value="-1">All</option>
-                                
+                                <c:forEach items="${requestScope.buyers}" var="b">
+                                    <option ${(requestScope.idBuyer == b.id)?"selected":""} value="${b.id}">${b.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                         
@@ -66,26 +65,38 @@
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Owed</td>
-                            <td>Name Agent</td>
-                            <td>UserName</td>
+                            <td>Name Agency</td>
+                            <td>Phone</td>
+                            <td>Address</td>
                         </tr>
-                        <c:forEach items="${requestScope.invoicesDetailOwed}" var="i">
+                        <c:forEach items="${requestScope.invoicesDetailOwed}" var="iv">
                             <tr>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
-                                <td>something</td>
+                                <td>${iv.invoice.buyer.name}</td>
+                                <td>${iv.invoiceProduct.productDetail.product.name}</td>
+                                <td>${iv.invoiceProduct.productDetail.dimension.name}</td>
+                                <td>${iv.invoice.date}</td>
+                                <td>${iv.invoiceProduct.buyPrice}</td>
+                                <td>${iv.invoiceProduct.quantity}</td>
+                                <td>${iv.invoice.amount}</td>
+                                <td>${iv.invoice.paid}</td>
+                                <td>${iv.invoice.owed}</td>
+                                <td>${iv.invoice.agency.name}</td>
+                                <td>${iv.invoice.agency.phone}</td>
+                                <td>${iv.invoice.agency.address}</td>
+                                <td>
+                                    <button>
+                                        <a href="updateowedinvoice?idinvoice=${iv.invoice.id}&amount=${iv.invoice.amount}">
+                                            Paid full
+                                        </a>
+                                    </button>
+                                </td>
                             </tr>
                         </c:forEach>
                     </table>
-                        <div class="page"><input id="pageIndex" type="text" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/10</div>
+                        <div ${(requestScope.totalPage <= 1)?"style=\"display:none;\"":""} class="page">
+                        <input ${(requestScope.totalPage <= 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
+                                                                                                  onkeyup="keyUp(event)">/${requestScope.totalPage}
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 
 package controller;
 
+import dal.BuyerDBContext;
 import dal.InvoiceDetailDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,7 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.DetailInvoice;
+import model.Buyer;
+import model.InvoiceDetail;
 
 public class ReportOwedController extends HttpServlet {
 
@@ -47,8 +49,12 @@ public class ReportOwedController extends HttpServlet {
         InvoiceDetailDBContext db = new InvoiceDetailDBContext();
         int count = db.countOwedInvoice(dateFrom, dateTo, idBuyer);
         int totalPage = (count % pageSize == 0)?(count/pageSize):((count/pageSize)+1);
-        ArrayList<DetailInvoice> invoicesDetailOwed = db.getInvoicesOwed(idBuyer, dateFrom, dateTo, pageIndex, pageSize);
+        ArrayList<InvoiceDetail> invoicesDetailOwed = db.getInvoicesOwed(idBuyer, dateFrom, dateTo, pageIndex, pageSize);
+        BuyerDBContext buyerDb = new BuyerDBContext();
+        ArrayList<Buyer> buyers = buyerDb.getBuyers();
         request.setAttribute("invoicesDetailOwed", invoicesDetailOwed);
+        request.setAttribute("buyers", buyers);
+        request.setAttribute("idBuyer", idBuyer);
         request.setAttribute("dateFrom", dateFrom);
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("pageIndex", pageIndex);

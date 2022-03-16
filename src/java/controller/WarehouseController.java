@@ -20,7 +20,7 @@ import model.Product;
 import model.ProductDetail;
 
 
-public class DepotController extends HttpServlet {
+public class WarehouseController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,7 +51,7 @@ public class DepotController extends HttpServlet {
         ArrayList<ProductDetail> productsDetail = db.getProductsDetail(idProduct, idDimension);
         request.setAttribute("productsDetail", productsDetail);
         
-        request.getRequestDispatcher("depotproduct.jsp").forward(request, response);
+        request.getRequestDispatcher("warehouse.jsp").forward(request, response);
     }
 
     @Override
