@@ -17,7 +17,8 @@ public class ProductDetailDBContext extends DBContext {
             String sql = "select p.id as idProduct, p.name as nameProduct, "
                     + "d.id as idDimension, d.name as nameDimension, prd.totalQuantity \n"
                     + "from Product p join ProductDetail prd on p.id = prd.idProduct\n"
-                    + "join Dimension d on d.id = prd.idDimension\n";
+                    + "join Dimension d on d.id = prd.idDimension\n"
+                    + "and totalQuantity > 0 \n";
             if (idProduct != -1) {
                 sql += " and p.id = ? ";
             }

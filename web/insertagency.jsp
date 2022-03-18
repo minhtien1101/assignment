@@ -14,15 +14,41 @@
     <body>
         <h2>Insert New Agency</h2>
         <form action="../agency/insert" method="POST">
-            Name: <input type="text" name="name"/>
-            <br/>
-            Phone:
-            <input type="text" name="phone"/>
-            <br/>
-            Address:
-            <input type="text" name="address"/>
-            <br/>
-            <input type="submit" value="Save"/>
+            <table>
+                <tr>
+                    <td>Name Agency: </td>
+                    <td><input type="text" name="name" required/></td>
+                </tr>
+                <tr>
+                    <td>Phone Number: </td>
+                    <td>
+                        <input id="phone" type="text" name="phone" required/>
+                        <br/>
+                        <span id="msg-phone" style="color: red;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address: </td>
+                    <td><input type="text" name="address" required/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Save" onclick="return addAgency()"/></td>
+                </tr>
+            </table>
         </form>
+        <script>
+            function addAgency() {
+                var phone = document.getElementById("phone");
+                var regex_phone = /[0-9]+/;
+                if (regex_phone.test(phone.value)) {
+                    document.getElementById("msg-phone").innerHTML = "";
+                    return true;
+                } else {
+                    document.getElementById("msg-phone").innerHTML = "Phone number only contain number!";
+                    return false;
+                }
+            }
+        </script>
     </body>
 </html>

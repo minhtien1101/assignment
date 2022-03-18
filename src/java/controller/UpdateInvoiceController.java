@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.AgencyDBContext;
 import dal.BuyerDBContext;
 import dal.DimensionDBContext;
@@ -19,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Account;
 import model.Agency;
 import model.Buyer;
 import model.Dimension;
@@ -26,10 +28,10 @@ import model.InvoiceDetail;
 import model.Product;
 
 
-public class UpdateInvoiceController extends HttpServlet {
+public class UpdateInvoiceController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idInvoice_raw = request.getParameter("idinvoice");
         String idProduct_raw = request.getParameter("idproduct");
@@ -69,7 +71,7 @@ public class UpdateInvoiceController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idInvoice_raw = request.getParameter("idInvoice");
         String idBuyer_raw = request.getParameter("idBuyer");
@@ -97,17 +99,26 @@ public class UpdateInvoiceController extends HttpServlet {
         long paid = Long.parseLong(paid_raw);
         long owed = Long.parseLong(owed_raw);
         int idAgency = Integer.parseInt(idAgency_raw);
-//        Account acc = (Account)request.getSession().getAttribute("account");
+        Account account = (Account)request.getSession().getAttribute("account");
         
         InvoiceDetail newInvoiceDetail = new InvoiceDetail();
-        newInvoiceDetail.getInvoice().setId(idInvoice);
-        newInvoiceDetail.getInvoice().getBuyer().setId(idBuyer);
-        newInvoiceDetail.getInvoice().setDate(date);
-        newInvoiceDetail.getInvoice().setAmount(amount);
-        newInvoiceDetail.getInvoice().setPaid(paid);
-        newInvoiceDetail.getInvoice().setOwed(owed);
-        newInvoiceDetail.getInvoice().getAgency().setId(idAgency);
-        newInvoiceDetail.getInvoice().getAccount().setUsername("admin");
+        newInvoiceDetail.getInvoiceProduct().getInvoice().setId(idInvoice);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().getBuyer().setId(idBuyer);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().setDate(date);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().setAmount(amount);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().setPaid(paid);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().setOwed(owed);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().getAgency().setId(idAgency);
+        newInvoiceDetail.getInvoiceProduct().getInvoice().getAccount().setUsername(account.getUsername());
+
+//        newInvoiceDetail.getInvoice().setId(idInvoice);
+//        newInvoiceDetail.getInvoice().getBuyer().setId(idBuyer);
+//        newInvoiceDetail.getInvoice().setDate(date);
+//        newInvoiceDetail.getInvoice().setAmount(amount);
+//        newInvoiceDetail.getInvoice().setPaid(paid);
+//        newInvoiceDetail.getInvoice().setOwed(owed);
+//        newInvoiceDetail.getInvoice().getAgency().setId(idAgency);
+//        newInvoiceDetail.getInvoice().getAccount().setUsername(account.getUsername());
         newInvoiceDetail.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
         newInvoiceDetail.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
         newInvoiceDetail.getInvoiceProduct().setQuantity(quantity);

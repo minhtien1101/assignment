@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.AgencyDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,18 +19,20 @@ import model.Agency;
  *
  * @author DELL
  */
-public class InsertAgencyController extends HttpServlet {
+public class InsertAgencyController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("../insertagency.jsp").forward(request, response);
     }
 
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         String name = request.getParameter("name");
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");

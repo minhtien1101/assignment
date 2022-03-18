@@ -5,6 +5,7 @@
  */
 package controller.authentication;
 
+import dal.AccountDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Account;
 
 /**
  *
@@ -20,21 +22,54 @@ import javax.servlet.http.HttpServletResponse;
 //@WebServlet(name = "BaseAuthentication", urlPatterns = {"/BaseAuthentication"})
 public abstract class BaseAuthentication extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    private boolean isAuth(HttpServletRequest request) {
+        Account account = (Account) request.getSession().getAttribute("account");
+        if (account == null) {
+            return false;
+        } else {
+            String url = request.getServletPath();
+            AccountDBContext db = new AccountDBContext();
+            int num = db.getNumberOfRoles(account.getUsername(), url);
+            return num >= 1;
+        }
     }
+
+    protected abstract void processGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException;
+
+    protected abstract void processPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Account account = (Account) request.getSession().getAttribute("account");
+        if (isAuth(request)) {
+            //business
+            processGet(request, response);
+        } else {
+            if (account == null) {
+                response.sendRedirect("login");
+            } else {
+                response.getWriter().println("access denied!");
+            }
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Account account = (Account) request.getSession().getAttribute("account");
+        if (isAuth(request)) {
+            //business
+            processPost(request, response);
+        } else {
+            if (account == null) {
+                response.sendRedirect("login");
+            } else {
+                response.getWriter().println("access denied!");
+            }
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.InvoiceDBContext;
 import dal.InvoiceDetailDBContext;
 import dal.ProductDetailDBContext;
@@ -15,10 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DeleteInvoiceController extends HttpServlet {
+public class DeleteInvoiceController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idInvoice_raw = request.getParameter("idinvoice");
         String idProduct_raw = request.getParameter("idproduct");
@@ -39,7 +40,7 @@ public class DeleteInvoiceController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
 

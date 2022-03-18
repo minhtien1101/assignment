@@ -38,6 +38,7 @@
     position: relative;
     height: 100%;
     line-height: 46px;
+    width: 98px;
 }
 .user-menu {
     position: absolute;
@@ -45,6 +46,8 @@
     box-shadow:  0px 0px 10px rgb(185, 181, 181);
     display: none;
     padding-top: 8px;
+    right: 12px;
+    width: 102px;
 }
 .user-menu li a{
     padding: 0px 22px;

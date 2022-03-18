@@ -4,12 +4,6 @@
     Author     : DELL
 --%>
 
-<%-- 
-    Document   : home
-    Created on : Mar 5, 2022, 12:28:18 AM
-    Author     : DELL
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
@@ -35,7 +29,7 @@
                 <div class="user-info">
                     <div class="user-name">
                         <i class="fa-solid fa-user"></i>
-                        <span>Username</span>
+                        <span>${sessionScope.account.displayname}</span>
                         <i class="fa-solid fa-caret-down"></i>
 
                     </div>
@@ -47,7 +41,8 @@
             <div class="content">               
                 <div id="insert" class="insert">
                     <span style="color: red;" id="msg_err"></span>
-                    <form action="insert" method="POST">                      
+                    <form action="insert" method="POST">    
+                        <h2>Insert New Invoice</h2>
                         <table>
                             <tr>
                                 <td>Order by</td>

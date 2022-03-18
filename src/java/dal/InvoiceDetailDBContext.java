@@ -11,16 +11,17 @@ import model.InvoiceDetail;
 
 public class InvoiceDetailDBContext extends DBContext {
 
-    public ArrayList<InvoiceDetail> getInvoicesDetail(int idBuyer, Date dateFrom,
-            Date dateTo, int pageIndex, int pageSize) {
+    public ArrayList<InvoiceDetail> getInvoicesDetail(int idBuyer, int idProduct,int idDimension, Date dateFrom, Date dateTo, 
+            int pageIndex, int pageSize, boolean isOwedInvoice) {
         ArrayList<InvoiceDetail> invoicesDetail = new ArrayList<>();
         try {
             String sql = "select * from\n"
-                    + "(select ROW_NUMBER() over(order by i.date DESC) as row_index, b.id as idBuyer, b.name as nameBuyer, \n"
+                    + "(select ROW_NUMBER() over(order by i.id DESC, i.date DESC) as row_index, b.id as idBuyer, b.name as nameBuyer, \n"
+                    + "b.phone as phoneBuyer, b.gender, b.dob, b.address as addressBuyer, \n"
                     + "i.id as idInvoice, [ip].idProduct, d.id as idDimension, \n"
                     + "d.name as nameDimension, p.name as nameProduct, i.date, [ip].buyPrice, \n"
                     + "[ip].quantity, i.amount, i.paid, i.owed, ag.id as idAgency, ag.name as nameAgency, \n"
-                    + "ag.phone as phoneAgency, ag.address as addressAgency\n"
+                    + "ag.phone as phoneAgency, ag.address as addressAgency, a.username\n"
                     + "from Buyer b join Invoice i on b.id = i.idBuyer\n"
                     + "join Account a on a.username = i.userAccount\n"
                     + "join Agency ag on ag.id = i.idAgency\n"
@@ -29,6 +30,9 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "and pd.idDimension = [ip].idDimension\n"
                     + "join Product p on p.id = pd.idProduct\n"
                     + "join Dimension d on d.id = [ip].idDimension\n";
+            if(isOwedInvoice) {
+                sql += " and i.owed > 0 ";
+            }
             if (dateFrom != null) {
                 sql += " and date >= ? ";
             }
@@ -38,9 +42,17 @@ public class InvoiceDetailDBContext extends DBContext {
             if (idBuyer != -1) {
                 sql += " and idBuyer = ? \n";
             }
+            //----- new
+            if (idProduct != -1) {
+                sql += " and [ip].idProduct = ? \n";
+            }
+            if (idDimension != -1) {
+                sql += " and d.id = ? \n";
+            }
+            //------------
             sql += " ) invoiceDetail\n"
                     + "where row_index >= (?-1)*?+1 and row_index <= ? * ?";
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = con.prepareStatement(sql);          
             if (dateFrom != null) {
                 stm.setDate(1, dateFrom);
             }
@@ -49,7 +61,7 @@ public class InvoiceDetailDBContext extends DBContext {
             }
             if (dateTo != null && dateFrom != null) {
                 stm.setDate(2, dateTo);
-            }
+            }         
             if (dateFrom == null && dateTo == null && idBuyer != -1) {
                 stm.setInt(1, idBuyer);
             }
@@ -60,46 +72,231 @@ public class InvoiceDetailDBContext extends DBContext {
             if (dateFrom != null && dateTo != null && idBuyer != -1) {
                 stm.setInt(3, idBuyer);
             }
-            if (dateFrom == null && dateTo == null && idBuyer == -1) {
+            //---------
+            if(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct != -1) {
+                stm.setInt(1, idProduct);
+            }
+            if((dateFrom != null && dateTo == null && idBuyer == -1 && idProduct != -1)
+                    ||(dateFrom == null && dateTo != null && idBuyer == -1 && idProduct != -1)
+                    || (dateFrom == null && dateTo == null && idBuyer != -1 && idProduct != -1)) {
+                stm.setInt(2, idProduct);
+            }
+            if((dateFrom != null && dateTo != null && idBuyer == -1 && idProduct != -1)
+                    ||(dateFrom != null && dateTo == null && idBuyer != -1 && idProduct != -1)
+                    || (dateFrom == null && dateTo != null && idBuyer != -1 && idProduct != -1)) {
+                stm.setInt(3, idProduct);
+            }
+            if(dateFrom != null && dateTo != null && idBuyer != -1 && idProduct != -1) {
+                stm.setInt(4, idProduct);
+            }
+            
+            if(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct == -1
+                    && idDimension != -1) {
+                stm.setInt(1, idDimension);
+            }
+            
+            if((dateFrom != null && dateTo == null && idBuyer == -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom == null && dateTo != null && idBuyer == -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom == null && dateTo == null && idBuyer != -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct != -1
+                    && idDimension != -1) ) {
+                stm.setInt(2, idDimension);
+            }
+            if((dateFrom != null && dateTo != null && idBuyer == -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom != null && dateTo == null && idBuyer != -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom != null && dateTo == null && idBuyer == -1 && idProduct != -1
+                    && idDimension != -1)
+                    ||(dateFrom == null && dateTo != null && idBuyer != -1 && idProduct == -1
+                    && idDimension != -1) 
+                    ||(dateFrom == null && dateTo != null && idBuyer == -1 && idProduct != -1
+                    && idDimension != -1) 
+                    ||(dateFrom == null && dateTo == null && idBuyer != -1 && idProduct != -1
+                    && idDimension != -1) 
+                    ) {
+                stm.setInt(3, idDimension);
+            }
+            
+            if((dateFrom != null && dateTo != null && idBuyer != -1 && idProduct == -1
+                    && idDimension != -1)
+                    ||(dateFrom != null && dateTo != null && idBuyer == -1 && idProduct != -1
+                    && idDimension != -1)
+                    || (dateFrom != null && dateTo == null && idBuyer != -1 && idProduct != -1
+                    && idDimension != -1)
+                    || (dateFrom == null && dateTo != null && idBuyer != -1 && idProduct != -1
+                    && idDimension != -1)
+                    ) {
+                stm.setInt(4, idDimension);
+            }
+            
+            if(dateFrom != null && dateTo != null && idBuyer != -1 && idProduct != -1
+                    && idDimension != -1) {
+                stm.setInt(5, idDimension);
+            }
+            //---------
+            if (dateFrom == null && dateTo == null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension == -1) {
                 stm.setInt(1, pageIndex);
                 stm.setInt(2, pageSize);
                 stm.setInt(3, pageIndex);
                 stm.setInt(4, pageSize);
             }
-            if ((dateFrom != null && dateTo == null && idBuyer == -1)
-                    || (dateFrom == null && dateTo != null && idBuyer == -1)
-                    || (dateFrom == null && dateTo == null && idBuyer != -1)) {
+            if ((dateFrom != null && dateTo == null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension == -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension == -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension == -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension == -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension != -1)
+                    ) {
                 stm.setInt(2, pageIndex);
                 stm.setInt(3, pageSize);
                 stm.setInt(4, pageIndex);
                 stm.setInt(5, pageSize);
             }
-            if (dateFrom != null && dateTo != null && idBuyer == -1) {
+            if ((dateFrom != null && dateTo != null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension == -1)   
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension == -1)  
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension == -1) 
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension != -1)  
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension == -1)  
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension == -1) 
+                    || 
+                    (dateFrom == null && dateTo != null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension != -1)  
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension == -1)  
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension != -1)  
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension != -1)
+                    ) {
                 stm.setInt(3, pageIndex);
                 stm.setInt(4, pageSize);
                 stm.setInt(5, pageIndex);
                 stm.setInt(6, pageSize);
             }
-            if (dateFrom != null && dateTo != null && idBuyer != -1) {
+            if ((dateFrom != null && dateTo != null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension == -1)   
+                    ||
+                    (dateFrom != null && dateTo != null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension == -1)
+                    ||
+                    (dateFrom != null && dateTo != null && idBuyer == -1 &&
+                    idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension == -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension == -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension != -1)
+                    ) {
                 stm.setInt(4, pageIndex);
                 stm.setInt(5, pageSize);
                 stm.setInt(6, pageIndex);
                 stm.setInt(7, pageSize);
             }
+            
+            if ((dateFrom != null && dateTo != null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension == -1)   
+                    ||
+                    (dateFrom != null && dateTo != null && idBuyer != -1 &&
+                    idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo != null && idBuyer == -1 &&
+                    idProduct != -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension != -1)   
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension != -1)   
+                    ) {
+                stm.setInt(5, pageIndex);
+                stm.setInt(6, pageSize);
+                stm.setInt(7, pageIndex);
+                stm.setInt(8, pageSize);
+            }
+            if ((dateFrom != null && dateTo != null && idBuyer != -1 &&
+                    idProduct != -1 && idDimension != -1)                  
+                    ) {
+                stm.setInt(6, pageIndex);
+                stm.setInt(7, pageSize);
+                stm.setInt(8, pageIndex);
+                stm.setInt(9, pageSize);
+            }
+            
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 InvoiceDetail d = new InvoiceDetail();
-                d.getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
-                d.getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
-                d.getInvoice().getAgency().setId(rs.getInt("idAgency"));
-                d.getInvoice().getAgency().setName(rs.getString("nameAgency"));
-                d.getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
-                d.getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
-                d.getInvoice().setId(rs.getInt("idInvoice"));
-                d.getInvoice().setDate(rs.getDate("date"));
-                d.getInvoice().setAmount(rs.getLong("amount"));
-                d.getInvoice().setPaid(rs.getLong("paid"));
-                d.getInvoice().setOwed(rs.getLong("owed"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setPhone(rs.getString("phoneBuyer"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setDob(rs.getDate("dob"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setGender(rs.getBoolean("gender"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setAddress(rs.getString("addressBuyer"));
+                d.getInvoiceProduct().getInvoice().getAgency().setId(rs.getInt("idAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setName(rs.getString("nameAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
+                d.getInvoiceProduct().getInvoice().getAccount().setUsername(rs.getString("username"));
+                d.getInvoiceProduct().getInvoice().setId(rs.getInt("idInvoice"));
+                d.getInvoiceProduct().getInvoice().setDate(rs.getDate("date"));
+                d.getInvoiceProduct().getInvoice().setAmount(rs.getLong("amount"));
+                d.getInvoiceProduct().getInvoice().setPaid(rs.getLong("paid"));
+                d.getInvoiceProduct().getInvoice().setOwed(rs.getLong("owed"));
+//                d.getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
+//                d.getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
+//                d.getInvoice().getBuyer().setPhone(rs.getString("phoneBuyer"));
+//                d.getInvoice().getBuyer().setDob(rs.getDate("dob"));
+//                d.getInvoice().getBuyer().setGender(rs.getBoolean("gender"));
+//                d.getInvoice().getBuyer().setAddress(rs.getString("addressBuyer"));
+//                d.getInvoice().getAgency().setId(rs.getInt("idAgency"));
+//                d.getInvoice().getAgency().setName(rs.getString("nameAgency"));
+//                d.getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
+//                d.getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
+//                d.getInvoice().getAccount().setUsername(rs.getString("username"));
+//                d.getInvoice().setId(rs.getInt("idInvoice"));
+//                d.getInvoice().setDate(rs.getDate("date"));
+//                d.getInvoice().setAmount(rs.getLong("amount"));
+//                d.getInvoice().setPaid(rs.getLong("paid"));
+//                d.getInvoice().setOwed(rs.getLong("owed"));
                 d.getInvoiceProduct().getProductDetail().getDimension().setId(rs.getInt("idDimension"));
                 d.getInvoiceProduct().getProductDetail().getDimension().setName(rs.getString("nameDimension"));
                 d.getInvoiceProduct().getProductDetail().getProduct().setId(rs.getInt("idProduct"));
@@ -115,11 +312,16 @@ public class InvoiceDetailDBContext extends DBContext {
         return invoicesDetail;
     }
 
-    public int count(Date dateFrom, Date dateTo, int idBuyer) {
+    public int count(Date dateFrom, Date dateTo, int idBuyer, int idProduct, int idDimension, boolean isOwedInvoice) {
+
+        
         try {
             String sql = "select count(*) as total from \n"
                     + "(select * from Invoice i join InvoiceProduct [ip] on i.id = [ip].idInvoice\n"
                     + "";
+            if(isOwedInvoice) {
+                sql += " and i.owed > 0 ";
+            }
             if (dateFrom != null) {
                 sql += " and date >= ? ";
             }
@@ -129,34 +331,96 @@ public class InvoiceDetailDBContext extends DBContext {
             if (idBuyer != -1) {
                 sql += " and idBuyer = ? ";
             }
+            if (idProduct != -1) {
+                sql += " and [ip].idProduct = ? ";
+            }
+            if (idDimension != -1) {
+                sql += " and [ip].idDimension = ? ";
+            }
             sql += ") totalInvoice";
             PreparedStatement stm = con.prepareStatement(sql);
-            if (dateFrom != null && dateTo == null && idBuyer == -1) {
+            if(dateFrom != null) {
                 stm.setDate(1, dateFrom);
             }
-            if (dateFrom == null && dateTo != null && idBuyer == -1) {
+            if(dateFrom == null && dateTo != null) {
                 stm.setDate(1, dateTo);
             }
-            if (dateFrom != null && dateTo != null && idBuyer == -1) {
-                stm.setDate(1, dateFrom);
+            if(dateFrom != null && dateTo != null) {
                 stm.setDate(2, dateTo);
             }
-            if (dateFrom != null && dateTo != null && idBuyer != -1) {
-                stm.setDate(1, dateFrom);
-                stm.setDate(2, dateTo);
-                stm.setInt(3, idBuyer);
-            }
-            if (dateFrom == null && dateTo == null && idBuyer != -1) {
+            if(dateFrom == null && dateTo == null && idBuyer != -1) {
                 stm.setInt(1, idBuyer);
             }
-            if (dateFrom != null && dateTo == null && idBuyer != -1) {
-                stm.setDate(1, dateFrom);
+            if((dateFrom != null && dateTo == null && idBuyer != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1)) {
                 stm.setInt(2, idBuyer);
-
             }
-            if (dateFrom == null && dateTo != null && idBuyer != -1) {
-                stm.setDate(1, dateTo);
-                stm.setInt(2, idBuyer);
+            if((dateFrom != null && dateTo != null && idBuyer != -1)) {
+                stm.setInt(3, idBuyer);
+            }
+            if(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct != -1) {
+                stm.setInt(1, idProduct);
+            }
+            if((dateFrom != null && dateTo == null && idBuyer == -1 && idProduct != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer == -1 && idProduct != -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 && idProduct != -1)
+                    ) {
+                stm.setInt(2, idProduct);
+            }
+            if((dateFrom != null && dateTo != null && idBuyer == -1 && idProduct != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 && idProduct != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 && idProduct != -1)
+                    ) {
+                stm.setInt(3, idProduct);
+            }
+            if((dateFrom != null && dateTo != null && idBuyer != -1 && idProduct != -1)) {
+                stm.setInt(4, idProduct);
+            }
+            
+            if(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct == -1 && idDimension != -1) {
+                stm.setInt(1, idDimension);
+            }
+            if((dateFrom != null && dateTo == null && idBuyer == -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer == -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer == -1 && idProduct != -1 && idDimension != -1)
+                    ) {
+                stm.setInt(2, idDimension);
+            }
+            
+            if((dateFrom != null && dateTo != null && idBuyer == -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer != -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo == null && idBuyer == -1 && idProduct != -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer == -1 && idProduct != -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo == null && idBuyer != -1 && idProduct != -1 && idDimension != -1)
+                    ) {
+                stm.setInt(3, idDimension);
+            }
+            if((dateFrom != null && dateTo != null && idBuyer != -1 && idProduct == -1 && idDimension != -1)
+                    ||
+                    (dateFrom != null && dateTo != null && idBuyer == -1 && idProduct != -1 && idDimension != -1)
+                    ||
+                    (dateFrom == null && dateTo != null && idBuyer != -1 && idProduct != -1 && idDimension != -1)
+                    ) {
+                stm.setInt(4, idDimension);
+            }
+            
+            if(dateFrom != null && dateTo != null && idBuyer != -1 && idProduct != -1 && idDimension != -1) {
+                stm.setInt(5, idDimension);
             }
             
             ResultSet rs = stm.executeQuery();
@@ -167,166 +431,6 @@ public class InvoiceDetailDBContext extends DBContext {
             Logger.getLogger(InvoiceDetailDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
-    }
-
-    public int countOwedInvoice(Date dateFrom, Date dateTo, int idBuyer) {
-        try {
-            String sql = "select count(*) as total from \n"
-                    + "(select * from Invoice i join InvoiceProduct [ip] on i.id = [ip].idInvoice\n"
-                    + "and owed > 0 \n";
-            if (dateFrom != null) {
-                sql += " and date >= ? ";
-            }
-            if (dateTo != null) {
-                sql += " and date <= ? ";
-            }
-            if (idBuyer != -1) {
-                sql += " and idBuyer = ? ";
-            }
-            sql += ") totalInvoice";
-            PreparedStatement stm = con.prepareStatement(sql);
-            if (dateFrom != null && dateTo == null && idBuyer == -1) {
-                stm.setDate(1, dateFrom);
-            }
-            if (dateFrom == null && dateTo != null && idBuyer == -1) {
-                stm.setDate(1, dateTo);
-            }
-            if (dateFrom != null && dateTo != null && idBuyer == -1) {
-                stm.setDate(1, dateFrom);
-                stm.setDate(2, dateTo);
-            }
-            if (dateFrom != null && dateTo != null && idBuyer != -1) {
-                stm.setDate(1, dateFrom);
-                stm.setDate(2, dateTo);
-                stm.setInt(3, idBuyer);
-            }
-            if (dateFrom == null && dateTo == null && idBuyer != -1) {
-                stm.setInt(1, idBuyer);
-            }
-            if (dateFrom != null && dateTo == null && idBuyer != -1) {
-                stm.setDate(1, dateFrom);
-                stm.setInt(2, idBuyer);
-
-            }
-            if (dateFrom == null && dateTo != null && idBuyer != -1) {
-                stm.setDate(1, dateTo);
-                stm.setInt(2, idBuyer);
-            }
-            
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(InvoiceDetailDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return -1;
-
-    }
-
-    public ArrayList<InvoiceDetail> getInvoicesOwed(int idBuyer, Date dateFrom,
-            Date dateTo, int pageIndex, int pageSize) {
-        ArrayList<InvoiceDetail> invoicesOwedDetail = new ArrayList<>();
-        try {
-            String sql = "select * from\n"
-                    + "(select ROW_NUMBER() over(order by i.date DESC) as row_index, b.id as idBuyer, b.name as nameBuyer, \n"
-                    + "i.id as idInvoice, [ip].idProduct, d.id as idDimension, \n"
-                    + "d.name as nameDimension, p.name as nameProduct, i.date, [ip].buyPrice, \n"
-                    + "[ip].quantity, i.amount, i.paid, i.owed, ag.id as idAgency, ag.name as nameAgency, \n"
-                    + "ag.phone as phoneAgency, ag.address as addressAgency\n"
-                    + "from Buyer b join Invoice i on b.id = i.idBuyer\n"
-                    + "join Account a on a.username = i.userAccount\n"
-                    + "join Agency ag on ag.id = i.idAgency\n"
-                    + "join InvoiceProduct [ip] on [ip].idInvoice = i.id\n"
-                    + "join ProductDetail pd on pd.idProduct = [ip].idProduct\n"
-                    + "and pd.idDimension = [ip].idDimension\n"
-                    + "join Product p on p.id = pd.idProduct\n"
-                    + "join Dimension d on d.id = [ip].idDimension\n"
-                    + "and owed > 0 \n";
-            if (dateFrom != null) {
-                sql += " and date >= ? ";
-            }
-            if (dateTo != null) {
-                sql += " and date <= ? ";
-            }
-            if (idBuyer != -1) {
-                sql += " and idBuyer = ? \n";
-            }
-            sql += " ) invoiceDetail\n"
-                    + "where row_index >= (?-1)*?+1 and row_index <= ? * ?";
-            PreparedStatement stm = con.prepareStatement(sql);
-            if (dateFrom != null) {
-                stm.setDate(1, dateFrom);
-            }
-            if (dateTo != null && dateFrom == null) {
-                stm.setDate(1, dateTo);
-            }
-            if (dateTo != null && dateFrom != null) {
-                stm.setDate(2, dateTo);
-            }
-            if (dateFrom == null && dateTo == null && idBuyer != -1) {
-                stm.setInt(1, idBuyer);
-            }
-            if ((dateFrom == null && dateTo != null && idBuyer != -1)
-                    || (dateFrom != null && dateTo == null && idBuyer != -1)) {
-                stm.setInt(2, idBuyer);
-            }
-            if (dateFrom != null && dateTo != null && idBuyer != -1) {
-                stm.setInt(3, idBuyer);
-            }
-            if (dateFrom == null && dateTo == null && idBuyer == -1) {
-                stm.setInt(1, pageIndex);
-                stm.setInt(2, pageSize);
-                stm.setInt(3, pageIndex);
-                stm.setInt(4, pageSize);
-            }
-            if ((dateFrom != null && dateTo == null && idBuyer == -1)
-                    || (dateFrom == null && dateTo != null && idBuyer == -1)
-                    || (dateFrom == null && dateTo == null && idBuyer != -1)) {
-                stm.setInt(2, pageIndex);
-                stm.setInt(3, pageSize);
-                stm.setInt(4, pageIndex);
-                stm.setInt(5, pageSize);
-            }
-            if (dateFrom != null && dateTo != null && idBuyer == -1) {
-                stm.setInt(3, pageIndex);
-                stm.setInt(4, pageSize);
-                stm.setInt(5, pageIndex);
-                stm.setInt(6, pageSize);
-            }
-            if (dateFrom != null && dateTo != null && idBuyer != -1) {
-                stm.setInt(4, pageIndex);
-                stm.setInt(5, pageSize);
-                stm.setInt(6, pageIndex);
-                stm.setInt(7, pageSize);
-            }
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                InvoiceDetail d = new InvoiceDetail();
-                d.getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
-                d.getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
-                d.getInvoice().getAgency().setId(rs.getInt("idAgency"));
-                d.getInvoice().getAgency().setName(rs.getString("nameAgency"));
-                d.getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
-                d.getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
-                d.getInvoice().setId(rs.getInt("idInvoice"));
-                d.getInvoice().setDate(rs.getDate("date"));
-                d.getInvoice().setAmount(rs.getLong("amount"));
-                d.getInvoice().setPaid(rs.getLong("paid"));
-                d.getInvoice().setOwed(rs.getLong("owed"));
-                d.getInvoiceProduct().getProductDetail().getDimension().setId(rs.getInt("idDimension"));
-                d.getInvoiceProduct().getProductDetail().getDimension().setName(rs.getString("nameDimension"));
-                d.getInvoiceProduct().getProductDetail().getProduct().setId(rs.getInt("idProduct"));
-                d.getInvoiceProduct().getProductDetail().getProduct().setName(rs.getString("nameProduct"));
-                d.getInvoiceProduct().setBuyPrice(rs.getLong("buyPrice"));
-                d.getInvoiceProduct().setQuantity(rs.getInt("quantity"));
-                invoicesOwedDetail.add(d);
-
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(InvoiceDetailDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return invoicesOwedDetail;
     }
 
     public void insertInvoice(InvoiceDetail invoiceDetail, boolean isExist, int totalQuantity) {
@@ -347,7 +451,20 @@ public class InvoiceDetailDBContext extends DBContext {
                         + "   SET [totalQuantity] = ?\n"
                         + " WHERE [idProduct] = ? and [idDimension] = ?";
             }
-
+            PreparedStatement stm_insert_product_detail = con.prepareStatement(insert_product_detail);
+            if (!isExist) {
+                stm_insert_product_detail.setInt(1, invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().getId());
+                stm_insert_product_detail.setInt(2, invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().getId());
+                stm_insert_product_detail.setInt(3, invoiceDetail.getInvoiceProduct().getQuantity());
+            } else {
+                int total = totalQuantity + invoiceDetail.getInvoiceProduct().getQuantity();
+                stm_insert_product_detail.setInt(1, total);
+                stm_insert_product_detail.setInt(2, invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().getId());
+                stm_insert_product_detail.setInt(3, invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().getId());
+            }
+            stm_insert_product_detail.executeUpdate();
+            
+            
             String insert_invoice = "INSERT INTO [Invoice]\n"
                     + "           ([date]\n"
                     + "           ,[amount]\n"
@@ -364,7 +481,33 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "           ,?\n"
                     + "           ,?\n"
                     + "           ,?)";
+  
+            PreparedStatement stm_insert_invoice = con.prepareStatement(insert_invoice);
+            stm_insert_invoice.setDate(1, invoiceDetail.getInvoiceProduct().getInvoice().getDate());
+            stm_insert_invoice.setFloat(2, invoiceDetail.getInvoiceProduct().getInvoice().getAmount());
+            stm_insert_invoice.setFloat(3, invoiceDetail.getInvoiceProduct().getInvoice().getPaid());
+            stm_insert_invoice.setFloat(4, invoiceDetail.getInvoiceProduct().getInvoice().getOwed());
+            stm_insert_invoice.setInt(5, invoiceDetail.getInvoiceProduct().getInvoice().getAgency().getId());
+            stm_insert_invoice.setInt(6, invoiceDetail.getInvoiceProduct().getInvoice().getBuyer().getId());
+            stm_insert_invoice.setString(7, invoiceDetail.getInvoiceProduct().getInvoice().getAccount().getUsername());
+//            stm_insert_invoice.setDate(1, invoiceDetail.getInvoice().getDate());
+//            stm_insert_invoice.setFloat(2, invoiceDetail.getInvoice().getAmount());
+//            stm_insert_invoice.setFloat(3, invoiceDetail.getInvoice().getPaid());
+//            stm_insert_invoice.setFloat(4, invoiceDetail.getInvoice().getOwed());
+//            stm_insert_invoice.setInt(5, invoiceDetail.getInvoice().getAgency().getId());
+//            stm_insert_invoice.setInt(6, invoiceDetail.getInvoice().getBuyer().getId());
+//            stm_insert_invoice.setString(7, invoiceDetail.getInvoice().getAccount().getUsername());
+            stm_insert_invoice.executeUpdate();
 
+            int idInvoice = 0;
+            // lữu trữ tạm bản ghi vừa insert và lấy id của bản ghi đó
+            String sql_idinvoice = "Select @@IDENTITY as id";
+            PreparedStatement stm_getIdInvoice = con.prepareStatement(sql_idinvoice);
+            ResultSet rs = stm_getIdInvoice.executeQuery();
+            if (rs.next()) {
+                idInvoice = rs.getInt(1);
+            }
+            
             String insert_invoice_product = "INSERT INTO [InvoiceProduct]\n"
                     + "           ([idInvoice]\n"
                     + "           ,[idProduct]\n"
@@ -379,38 +522,7 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "           ,?\n"
                     + "           ,?\n"
                     + "           ,?)";
-
-            PreparedStatement stm_insert_product_detail = con.prepareStatement(insert_product_detail);
-            if (!isExist) {
-                stm_insert_product_detail.setInt(1, invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().getId());
-                stm_insert_product_detail.setInt(2, invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().getId());
-                stm_insert_product_detail.setInt(3, invoiceDetail.getInvoiceProduct().getQuantity());
-            } else {
-                int total = totalQuantity + invoiceDetail.getInvoiceProduct().getQuantity();
-                stm_insert_product_detail.setInt(1, total);
-                stm_insert_product_detail.setInt(2, invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().getId());
-                stm_insert_product_detail.setInt(3, invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().getId());
-            }
-            stm_insert_product_detail.executeUpdate();
-            PreparedStatement stm_insert_invoice = con.prepareStatement(insert_invoice);
-            stm_insert_invoice.setDate(1, invoiceDetail.getInvoice().getDate());
-            stm_insert_invoice.setFloat(2, invoiceDetail.getInvoice().getAmount());
-//                    - (invoiceDetail.getInvoice().getAmount() * invoiceDetail.getInvoice().getAmount() / 100)));
-            stm_insert_invoice.setFloat(3, invoiceDetail.getInvoice().getPaid());
-            stm_insert_invoice.setFloat(4, invoiceDetail.getInvoice().getOwed());
-            stm_insert_invoice.setInt(5, invoiceDetail.getInvoice().getAgency().getId());
-            stm_insert_invoice.setInt(6, invoiceDetail.getInvoice().getBuyer().getId());
-            stm_insert_invoice.setString(7, invoiceDetail.getInvoice().getAccount().getUsername());
-            stm_insert_invoice.executeUpdate();
-
-            int idInvoice = 0;
-            // lữu trữ tạm bản ghi và lấy id
-            String sql_idinvoice = "Select @@IDENTITY as id";
-            PreparedStatement stm_getIdInvoice = con.prepareStatement(sql_idinvoice);
-            ResultSet rs = stm_getIdInvoice.executeQuery();
-            if (rs.next()) {
-                idInvoice = rs.getInt(1);
-            }
+            
             PreparedStatement stm_insert_invoice_product = con.prepareStatement(insert_invoice_product);
             stm_insert_invoice_product.setInt(1, idInvoice);
             stm_insert_invoice_product.setInt(2, invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().getId());
@@ -510,17 +622,18 @@ public class InvoiceDetailDBContext extends DBContext {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 InvoiceDetail d = new InvoiceDetail();
-                d.getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
-                d.getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
-                d.getInvoice().getAgency().setId(rs.getInt("idAgency"));
-                d.getInvoice().getAgency().setName(rs.getString("nameAgency"));
-                d.getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
-                d.getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
-                d.getInvoice().setId(rs.getInt("idInvoice"));
-                d.getInvoice().setDate(rs.getDate("date"));
-                d.getInvoice().setAmount(rs.getLong("amount"));
-                d.getInvoice().setPaid(rs.getLong("paid"));
-                d.getInvoice().setOwed(rs.getLong("owed"));
+                // sửa lại đang comment cái thuộc tính invoice ở invoicedetail
+                d.getInvoiceProduct().getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
+                d.getInvoiceProduct().getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
+                d.getInvoiceProduct().getInvoice().getAgency().setId(rs.getInt("idAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setName(rs.getString("nameAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
+                d.getInvoiceProduct().getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
+                d.getInvoiceProduct().getInvoice().setId(rs.getInt("idInvoice"));
+                d.getInvoiceProduct().getInvoice().setDate(rs.getDate("date"));
+                d.getInvoiceProduct().getInvoice().setAmount(rs.getLong("amount"));
+                d.getInvoiceProduct().getInvoice().setPaid(rs.getLong("paid"));
+                d.getInvoiceProduct().getInvoice().setOwed(rs.getLong("owed"));
                 d.getInvoiceProduct().getProductDetail().getDimension().setId(rs.getInt("idDimension"));
                 d.getInvoiceProduct().getProductDetail().getDimension().setName(rs.getString("nameDimension"));
                 d.getInvoiceProduct().getProductDetail().getProduct().setId(rs.getInt("idProduct"));
@@ -549,14 +662,22 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "      ,[userAccount] = ?\n"
                     + " WHERE [id] = ?";
             PreparedStatement stm_update_invoice = con.prepareStatement(update_invoice);
-            stm_update_invoice.setDate(1, newInvoiceDetail.getInvoice().getDate());
-            stm_update_invoice.setFloat(2, newInvoiceDetail.getInvoice().getAmount());
-            stm_update_invoice.setFloat(3, newInvoiceDetail.getInvoice().getPaid());
-            stm_update_invoice.setFloat(4, newInvoiceDetail.getInvoice().getOwed());
-            stm_update_invoice.setInt(5, newInvoiceDetail.getInvoice().getAgency().getId());
-            stm_update_invoice.setInt(6, newInvoiceDetail.getInvoice().getBuyer().getId());
-            stm_update_invoice.setString(7, newInvoiceDetail.getInvoice().getAccount().getUsername());
-            stm_update_invoice.setInt(8, newInvoiceDetail.getInvoice().getId());
+            stm_update_invoice.setDate(1, newInvoiceDetail.getInvoiceProduct().getInvoice().getDate());
+            stm_update_invoice.setFloat(2, newInvoiceDetail.getInvoiceProduct().getInvoice().getAmount());
+            stm_update_invoice.setFloat(3, newInvoiceDetail.getInvoiceProduct().getInvoice().getPaid());
+            stm_update_invoice.setFloat(4, newInvoiceDetail.getInvoiceProduct().getInvoice().getOwed());
+            stm_update_invoice.setInt(5, newInvoiceDetail.getInvoiceProduct().getInvoice().getAgency().getId());
+            stm_update_invoice.setInt(6, newInvoiceDetail.getInvoiceProduct().getInvoice().getBuyer().getId());
+            stm_update_invoice.setString(7, newInvoiceDetail.getInvoiceProduct().getInvoice().getAccount().getUsername());
+            stm_update_invoice.setInt(8, newInvoiceDetail.getInvoiceProduct().getInvoice().getId());
+//            stm_update_invoice.setDate(1, newInvoiceDetail.getInvoice().getDate());
+//            stm_update_invoice.setFloat(2, newInvoiceDetail.getInvoice().getAmount());
+//            stm_update_invoice.setFloat(3, newInvoiceDetail.getInvoice().getPaid());
+//            stm_update_invoice.setFloat(4, newInvoiceDetail.getInvoice().getOwed());
+//            stm_update_invoice.setInt(5, newInvoiceDetail.getInvoice().getAgency().getId());
+//            stm_update_invoice.setInt(6, newInvoiceDetail.getInvoice().getBuyer().getId());
+//            stm_update_invoice.setString(7, newInvoiceDetail.getInvoice().getAccount().getUsername());
+//            stm_update_invoice.setInt(8, newInvoiceDetail.getInvoice().getId());
             stm_update_invoice.executeUpdate();
             System.out.println("b1");
 
@@ -643,7 +764,8 @@ public class InvoiceDetailDBContext extends DBContext {
             stm_update_invoice_detail.setInt(3, quantityProduct);
             stm_update_invoice_detail.setFloat(4, newInvoiceDetail.getInvoiceProduct().getBuyPrice());
             stm_update_invoice_detail.setFloat(5, newInvoiceDetail.getInvoiceProduct().getDiscount());
-            stm_update_invoice_detail.setFloat(6, newInvoiceDetail.getInvoice().getId());
+//            stm_update_invoice_detail.setFloat(6, newInvoiceDetail.getInvoice().getId()); // đang đóng comment cái thuộc tính ở class invoicedetail
+            stm_update_invoice_detail.setFloat(6, newInvoiceDetail.getInvoiceProduct().getInvoice().getId());
             stm_update_invoice_detail.executeUpdate();
             System.out.println("b3");
             con.commit();

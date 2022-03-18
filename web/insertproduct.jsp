@@ -14,9 +14,16 @@
     <body>
         <h2>Insert New Product</h2>
         <form action="../product/insert" method="POST">
-            Name: <input type="text" name="name"/>
-            <br/>
-            <input type="submit" value="Save"/>
+            <table>
+                <tr>
+                    <td>Name Product: </td>
+                    <td><input type="text" name="name" required/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Save"/></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>

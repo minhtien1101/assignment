@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.BuyerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,16 +20,16 @@ import model.Buyer;
  *
  * @author DELL
  */
-public class InsertBuyerController extends HttpServlet {
+public class InsertBuyerController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("../insertbuyer.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");

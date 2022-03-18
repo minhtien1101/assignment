@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.DimensionDBContext;
 import dal.ProductDBContext;
 import dal.ProductDetailDBContext;
@@ -20,10 +21,10 @@ import model.Product;
 import model.ProductDetail;
 
 
-public class WarehouseController extends HttpServlet {
+public class WarehouseController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {       
         String idProduct_raw = request.getParameter("idProduct");
         String idDimension_raw = request.getParameter("idDimension");
@@ -55,7 +56,7 @@ public class WarehouseController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
 

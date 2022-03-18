@@ -14,9 +14,16 @@
     <body>
         <h2>Insert New Dimension</h2>
         <form action="../dimension/insert" method="POST">
-            Name: <input type="text" name="name" placeholder="1220*2440*10mm"/>
-            <br/>
-            <input type="submit" value="Save"/>
+            <table>
+                <tr>
+                    <td>Dimension: </td>
+                    <td> <input type="text" name="name" placeholder="VD: 1220*2440*10mm" required/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Save"/></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>

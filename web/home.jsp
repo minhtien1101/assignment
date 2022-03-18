@@ -44,23 +44,42 @@
                     <form action="home" method="GET">
                         <div>From <input type="date" value="${requestScope.dateFrom}" name="dateFrom"></div>
                         <div>To <input type="date" value="${requestScope.dateTo}" name="dateTo"></div>
-                        Name Buyer<select name="idBuyer">
+                        Name Buyer
+                        <select name="idBuyer">
                             <option value="-1">All</option>
                             <c:forEach items="${requestScope.buyers}" var="b">
                                 <option ${(idBuyer == b.id)?"selected":""} value="${b.id}">${b.name}</option>
                             </c:forEach>
                         </select>
+                        Name Product
+                        <select name="idProduct">
+                            <option value="-1">All</option>
+                            <c:forEach items="${requestScope.products}" var="p">
+                                <option ${(idProduct == p.id)?"selected":""} value="${p.id}">${p.name}</option>
+                            </c:forEach>
+                        </select>
+                        Dimension
+                        <select name="idDimension">
+                            <option value="-1">All</option>
+                            <c:forEach items="${requestScope.dimensions}" var="d">
+                                <option ${(idDimension == d.id)?"selected":""} value="${d.id}">${d.name}</option>
+                            </c:forEach>
+                        </select>
+                        
                         <input type="submit" value="Search">
-
+                        
                     </form>
                     <table>
+                        <h2>List Of All Invoices</h2>
                         <tr>
                             <td>Name Buyer</td>
+                            <td>Phone</td>
                             <td>Name Product</td>
                             <td>Dimension</td>
                             <td>Date</td>
                             <td>Price</td>
                             <td>Quantity</td>
+                            <td>Discount</td>
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Owed</td>
@@ -72,23 +91,25 @@
 
                         <c:forEach items="${requestScope.invoicesDetail}" var="d">
                             <tr>
-                                <td>${d.invoice.buyer.name}</td>
+                                <td>${d.invoiceProduct.invoice.buyer.name}</td>
+                                <td>${d.invoiceProduct.invoice.buyer.phone}</td>
                                 <td>${d.invoiceProduct.productDetail.product.name}</td>
                                 <td>${d.invoiceProduct.productDetail.dimension.name}</td>
-                                <td>${d.invoice.date}</td>
+                                <td>${d.invoiceProduct.invoice.date}</td>
                                 <td>${d.invoiceProduct.buyPrice}</td>
                                 <td>${d.invoiceProduct.quantity}</td>
-                                <td>${d.invoice.amount}</td>
-                                <td>${d.invoice.paid}</td>
-                                <td>${d.invoice.owed}</td>
-                                <td>${d.invoice.agency.name}</td>
-                                <td>${d.invoice.agency.phone}</td>
-                                <td>${d.invoice.agency.address}</td>
+                                <td>${d.invoiceProduct.discount}%</td>
+                                <td>${d.invoiceProduct.invoice.amount}</td>
+                                <td>${d.invoiceProduct.invoice.paid}</td>
+                                <td>${d.invoiceProduct.invoice.owed}</td>
+                                <td>${d.invoiceProduct.invoice.agency.name}</td>
+                                <td>${d.invoiceProduct.invoice.agency.phone}</td>
+                                <td>${d.invoiceProduct.invoice.agency.address}</td>
                                 <td>
-                                    <a href="update?idinvoice=${d.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}">
+                                    <a href="update?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}">
                                         Update
                                     </a> | 
-                                    <a href="delete?idinvoice=${d.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}" onclick="return deleteInvoice()">
+                                    <a href="delete?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}" onclick="return deleteInvoice()">
                                         Delete
                                     </a>
                                 </td>
@@ -96,8 +117,7 @@
                         </c:forEach>
                     </table>
                     <div ${(requestScope.totalPage <= 1)?"style=\"display:none;\"":""} class="page">
-                        <input ${(requestScope.totalPage <= 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
-                                                                                                  onkeyup="keyUp(event)">/${requestScope.totalPage}
+                        <input id="pageIndex" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/${requestScope.totalPage}
                     </div>
                 </div>
             </div>

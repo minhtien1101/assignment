@@ -1,6 +1,7 @@
 
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.AgencyDBContext;
 import dal.BuyerDBContext;
 import dal.DimensionDBContext;
@@ -23,10 +24,10 @@ import model.Dimension;
 import model.Product;
 
 
-public class InsertInvoiceController extends HttpServlet {
+public class InsertInvoiceController extends BaseAuthentication {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BuyerDBContext buyerDB = new BuyerDBContext();
         ArrayList<Buyer> buyers = buyerDB.getBuyers();
@@ -44,7 +45,7 @@ public class InsertInvoiceController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idBuyer_raw = request.getParameter("idBuyer");
         String idProduct_raw = request.getParameter("idProduct");
@@ -70,7 +71,7 @@ public class InsertInvoiceController extends HttpServlet {
         long paid = Long.parseLong(paid_raw);
         long owed = Long.parseLong(owed_raw);
         int idAgency = Integer.parseInt(idAgency_raw);
-//        Account acc = (Account)request.getSession().getAttribute("account");
+        Account account = (Account)request.getSession().getAttribute("account");
 
 
         ProductDetailDBContext productDdb = new ProductDetailDBContext();
@@ -82,13 +83,20 @@ public class InsertInvoiceController extends HttpServlet {
             totalQuantity = 0;
         }
         InvoiceDetail invoiceDetail = new InvoiceDetail();
-        invoiceDetail.getInvoice().getBuyer().setId(idBuyer);
-        invoiceDetail.getInvoice().setDate(date);
-        invoiceDetail.getInvoice().setAmount(amount);
-        invoiceDetail.getInvoice().setPaid(paid);
-        invoiceDetail.getInvoice().setOwed(owed);
-        invoiceDetail.getInvoice().getAgency().setId(idAgency);
-        invoiceDetail.getInvoice().getAccount().setUsername("admin");
+        invoiceDetail.getInvoiceProduct().getInvoice().getBuyer().setId(idBuyer);
+        invoiceDetail.getInvoiceProduct().getInvoice().setDate(date);
+        invoiceDetail.getInvoiceProduct().getInvoice().setAmount(amount);
+        invoiceDetail.getInvoiceProduct().getInvoice().setPaid(paid);
+        invoiceDetail.getInvoiceProduct().getInvoice().setOwed(owed);
+        invoiceDetail.getInvoiceProduct().getInvoice().getAgency().setId(idAgency);
+        invoiceDetail.getInvoiceProduct().getInvoice().getAccount().setUsername(account.getUsername());
+//        invoiceDetail.getInvoice().getBuyer().setId(idBuyer);
+//        invoiceDetail.getInvoice().setDate(date);
+//        invoiceDetail.getInvoice().setAmount(amount);
+//        invoiceDetail.getInvoice().setPaid(paid);
+//        invoiceDetail.getInvoice().setOwed(owed);
+//        invoiceDetail.getInvoice().getAgency().setId(idAgency);
+//        invoiceDetail.getInvoice().getAccount().setUsername(account.getUsername());
         invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
         invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
         invoiceDetail.getInvoiceProduct().setQuantity(quantity);

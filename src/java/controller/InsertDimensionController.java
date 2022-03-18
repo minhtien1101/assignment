@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.DimensionDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,17 +16,17 @@ import javax.servlet.http.HttpServletResponse;
 import model.Dimension;
 
 
-public class InsertDimensionController extends HttpServlet {
+public class InsertDimensionController extends BaseAuthentication {
 
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("../insertdimension.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String name =  request.getParameter("name");
         Dimension dimension = new Dimension();

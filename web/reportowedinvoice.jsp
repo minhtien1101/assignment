@@ -21,7 +21,7 @@
 
                 <ul class="header-menu">
                     <li id="btn-search"><a href="home">Home</a></li>
-                    <li id="btn-insert"><a href="insert">Insert</a></li>
+                    <li id="btn-insert"><a href="insert">Insert Invoice</a></li>
                     <li id="btn-owed"><a href="owed">Invoices Owed</a></li>
                     <li id="btn-warehouse"><a href="warehouse">Warehouse</a></li>
                 </ul>
@@ -29,7 +29,7 @@
                 <div class="user-info">
                     <div class="user-name">
                         <i class="fa-solid fa-user"></i>
-                        <span>Username</span>
+                        <span>${sessionScope.account.displayname}</span>
                         <i class="fa-solid fa-caret-down"></i>
 
                     </div>
@@ -51,17 +51,33 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        
+                        Name Product
+                        <select name="idProduct">
+                            <option value="-1">All</option>
+                            <c:forEach items="${requestScope.products}" var="p">
+                                <option ${(idProduct == p.id)?"selected":""} value="${p.id}">${p.name}</option>
+                            </c:forEach>
+                        </select>
+                        Name Dimension
+                        <select name="idDimension">
+                            <option value="-1">All</option>
+                            <c:forEach items="${requestScope.dimensions}" var="d">
+                                <option ${(idDimension == d.id)?"selected":""} value="${d.id}">${d.name}</option>
+                            </c:forEach>
+                        </select>
                         <input type="submit" value="Search">
                     </form>
+                    <h2>List Of All Invoice Owed</h2>
                     <table>
                         <tr>
                             <td>Name Buyer</td>
+                            <td>Phone</td>
                             <td>Name Product</td>
                             <td>Dimension</td>
                             <td>Date</td>
                             <td>Price</td>
                             <td>Quantity</td>
+                            <td>Discount</td>
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Owed</td>
@@ -71,21 +87,23 @@
                         </tr>
                         <c:forEach items="${requestScope.invoicesDetailOwed}" var="iv">
                             <tr>
-                                <td>${iv.invoice.buyer.name}</td>
+                                <td>${iv.invoiceProduct.invoice.buyer.name}</td>
+                                <td>${iv.invoiceProduct.invoice.buyer.phone}</td>
                                 <td>${iv.invoiceProduct.productDetail.product.name}</td>
                                 <td>${iv.invoiceProduct.productDetail.dimension.name}</td>
-                                <td>${iv.invoice.date}</td>
+                                <td>${iv.invoiceProduct.invoice.date}</td>
                                 <td>${iv.invoiceProduct.buyPrice}</td>
                                 <td>${iv.invoiceProduct.quantity}</td>
-                                <td>${iv.invoice.amount}</td>
-                                <td>${iv.invoice.paid}</td>
-                                <td>${iv.invoice.owed}</td>
-                                <td>${iv.invoice.agency.name}</td>
-                                <td>${iv.invoice.agency.phone}</td>
-                                <td>${iv.invoice.agency.address}</td>
+                                <td>${iv.invoiceProduct.discount}%</td>
+                                <td>${iv.invoiceProduct.invoice.amount}</td>
+                                <td>${iv.invoiceProduct.invoice.paid}</td>
+                                <td>${iv.invoiceProduct.invoice.owed}</td>
+                                <td>${iv.invoiceProduct.invoice.agency.name}</td>
+                                <td>${iv.invoiceProduct.invoice.agency.phone}</td>
+                                <td>${iv.invoiceProduct.invoice.agency.address}</td>
                                 <td>
                                     <button>
-                                        <a href="updateowedinvoice?idinvoice=${iv.invoice.id}&amount=${iv.invoice.amount}">
+                                        <a href="updateowedinvoice?idinvoice=${iv.invoiceProduct.invoice.id}&amount=${iv.invoiceProduct.invoice.amount}">
                                             Paid full
                                         </a>
                                     </button>

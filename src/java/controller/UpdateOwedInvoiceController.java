@@ -1,6 +1,7 @@
 
 package controller;
 
+import controller.authentication.BaseAuthentication;
 import dal.InvoiceDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-public class UpdateOwedInvoiceController extends HttpServlet {
+public class UpdateOwedInvoiceController extends BaseAuthentication {
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idInvoice_raw = request.getParameter("idinvoice");      
         String amount_raw = request.getParameter("amount");      
@@ -25,7 +26,7 @@ public class UpdateOwedInvoiceController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
 

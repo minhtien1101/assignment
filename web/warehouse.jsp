@@ -60,6 +60,7 @@
                             <input type="submit" value="Search"/>
                         </div>
                     </form>
+                    <h2 style="text-align: center;">Warehouse</h2>
                     <table>
                         <tr>
                             <td>Product</td>
@@ -70,7 +71,7 @@
                             <tr>
                                 <td>${pd.product.name}</td>
                                 <td>${pd.dimension.name}</td>
-                                <td>${pd.totalQuantity} ${"tấm"}</td>
+                                <td>${pd.totalQuantity} ${"Tấm"}</td>
                             </tr>
                         </c:forEach>
                     </table>
