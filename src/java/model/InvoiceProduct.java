@@ -6,7 +6,6 @@ public class InvoiceProduct {
     private ProductDetail productDetail;
     private int quantity;
     private long buyPrice;
-    private int discount;
 
     public InvoiceProduct() {
         invoice = new Invoice();
@@ -44,13 +43,4 @@ public class InvoiceProduct {
     public void setBuyPrice(long buyPrice) {
         this.buyPrice = buyPrice;
     }
-
-    public int getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(int discount) {
-        this.discount = discount;
-    }
- 
 }

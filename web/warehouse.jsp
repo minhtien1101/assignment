@@ -35,6 +35,7 @@
 
                     </div>
                     <ul class="user-menu">
+                        <li><a href="role">Set Role</a></li>
                         <li><a href="login">Log Out</a></li>
                     </ul>
                 </div>

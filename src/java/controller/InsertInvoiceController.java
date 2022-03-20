@@ -53,20 +53,17 @@ public class InsertInvoiceController extends BaseAuthentication {
         String date_raw = request.getParameter("date");
         String buyPrice_raw = request.getParameter("buyPrice");
         String quantity_raw = request.getParameter("quantity");
-        String discount_raw = request.getParameter("discount");
         String amount_raw = request.getParameter("amount");
         String paid_raw = request.getParameter("paid");
         String owed_raw = request.getParameter("owed");
         String idAgency_raw = request.getParameter("idAgency");
         
-        // handling type data
         int idBuyer = Integer.parseInt(idBuyer_raw);
         int idProduct = Integer.parseInt(idProduct_raw);
         int idDimension = Integer.parseInt(idDimension_raw);
         Date date = Date.valueOf(date_raw);
         long buyPrice = Long.parseLong(buyPrice_raw);
         int quantity = Integer.parseInt(quantity_raw);
-        int discount = Integer.parseInt(discount_raw);
         long amount = Long.parseLong(amount_raw);
         long paid = Long.parseLong(paid_raw);
         long owed = Long.parseLong(owed_raw);
@@ -90,22 +87,13 @@ public class InsertInvoiceController extends BaseAuthentication {
         invoiceDetail.getInvoiceProduct().getInvoice().setOwed(owed);
         invoiceDetail.getInvoiceProduct().getInvoice().getAgency().setId(idAgency);
         invoiceDetail.getInvoiceProduct().getInvoice().getAccount().setUsername(account.getUsername());
-//        invoiceDetail.getInvoice().getBuyer().setId(idBuyer);
-//        invoiceDetail.getInvoice().setDate(date);
-//        invoiceDetail.getInvoice().setAmount(amount);
-//        invoiceDetail.getInvoice().setPaid(paid);
-//        invoiceDetail.getInvoice().setOwed(owed);
-//        invoiceDetail.getInvoice().getAgency().setId(idAgency);
-//        invoiceDetail.getInvoice().getAccount().setUsername(account.getUsername());
+
         invoiceDetail.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
         invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
         invoiceDetail.getInvoiceProduct().setQuantity(quantity);
-        invoiceDetail.getInvoiceProduct().setDiscount(discount);
         invoiceDetail.getInvoiceProduct().setBuyPrice(buyPrice);
         InvoiceDetailDBContext db = new InvoiceDetailDBContext();
         db.insertInvoice(invoiceDetail, isExist, totalQuantity);
-//        db.insertInvoice(idBuyer, idProduct, idDimension,date, buyPrice, 
-//                quantity, discount, amount, paid, owed, idAgency, "admin", isExist, totalQuantity);
         response.sendRedirect("home");
     }
 

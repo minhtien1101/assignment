@@ -34,6 +34,7 @@
 
                     </div>
                     <ul class="user-menu">
+                        <li><a href="role">Set Role</a></li>
                         <li><a href="login">Log Out</a></li>
                     </ul>
                 </div>
@@ -87,23 +88,29 @@
                             </tr>
                             <tr>
                                 <td>Quantity</td>
-                                <td><input id="quantity" type="number" name="quantity" min="0" required/></td>
+                                <td>
+                                    <input id="quantity" type="number" name="quantity" min="0" required/>
+                                    <div style="color: red;" id="msg-quantity"></div>
+                                </td>
                             </tr>
-                            <tr>
-                                <td>Discount</td>
-                                <td><input id="discount" type="number" value="0" name="discount" min="0" max="100" required/></td>
-                            </tr>
+
                             <tr>
                                 <td>Amount</td>
                                 <td><input id="amount" type="number" value="" onclick="getAmount()" min="0" name="amount" required/></td>
                             </tr>
                             <tr>
                                 <td>Paid</td>
-                                <td><input id="paid" type="number" name="paid" min="0" required/></td>
+                                <td>
+                                    <input id="paid" type="number" name="paid" min="0" required/>
+                                    <div style="color: red;" id="msg-paid"></div>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Owed</td>
-                                <td><input id="owed" type="number" name="owed" min="0" onclick="getOwed()"  required/></td>
+                                <td>
+                                    <input id="owed" type="number" name="owed" min="0" onclick="getOwed()"  required/>
+                                    <div style="color: red;" id="msg-owed"></div>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Name Agency</td>
@@ -127,28 +134,45 @@
             function getAmount(){
                 var price = document.getElementById("price");
                 var quantity = document.getElementById("quantity");
-                var discount = document.getElementById("discount");
                 var amount = document.getElementById("amount");
-                amount.value = Math.round((price.value * quantity.value) - (price.value * quantity.value*discount.value /100));
+                amount.value = Math.round(price.value * quantity.value);
             }   
             
             function getOwed() {
                 var amount = document.getElementById("amount");
                 var paid = document.getElementById("paid");
                 var owed = document.getElementById("owed");
-                owed.value = amount.value - paid.value;              
+                owed.value = amount.value - paid.value;    
+                if(owed.value <= 0) {
+                    owed.value = 0;
+                }
             }
             function submitInvoice() {
                 var price = document.getElementById("price");
                 var quantity = document.getElementById("quantity");
-                var discount = document.getElementById("discount");
                 var amount = document.getElementById("amount");
                 var paid = document.getElementById("paid");
                 var owed = document.getElementById("owed");
                 if (paid.value <= amount.value 
-                        && owed.value <= (amount.value - paid.value)) {                  
+                        && owed.value <= (amount.value - paid.value)
+                        && quantity.value > 0) {                  
                     return true;
                 } else {
+                    if(paid.value > amount.value) {
+                        document.getElementById("msg-paid").innerHTML = "Paid must <= "+amount.value;
+                    } else {
+                        document.getElementById("msg-paid").innerHTML = "";
+                    }
+                    if(owed.value > (amount.value - paid.value) && (amount.value - paid.value) >= 0) {
+                        document.getElementById("msg-owed").innerHTML = "Owed must <= "+(amount.value - paid.value);
+                    } else {
+                        document.getElementById("msg-owed").innerHTML = "";
+                    }
+                    if(quantity.value <= 0) {
+                        document.getElementById("msg-quantity").innerHTML = "Quantity must > 0";
+                    } else {
+                        document.getElementById("msg-quantity").innerHTML = "";
+                    }
                     return false;
                 }
             }

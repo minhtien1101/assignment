@@ -20,7 +20,6 @@ import model.InvoiceDetail;
 import model.Product;
 
 
-//public class HomeController extends HttpServlet {
 public class HomeController extends BaseAuthentication {
 
     @Override

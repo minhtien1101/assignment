@@ -18,16 +18,16 @@
                 <tr>
                     <td>Id Invoice</td>
                     <td>
-                        <input type="hidden" value="${requestScope.invoiceDetail.invoice.id}" name="idInvoice"/>
-                        ${requestScope.invoiceDetail.invoice.id}
+                        <input type="hidden" value="${requestScope.invoiceDetail.invoiceProduct.invoice.id}" name="idInvoice"/>
+                        ${requestScope.invoiceDetail.invoiceProduct.invoice.id}
                     </td>
                 </tr>
                 <tr>
-                    <td>Order by</td>
+                    <td>Buyer</td>
                     <td>
                         <select name="idBuyer">
                             <c:forEach items="${requestScope.buyers}" var="b">
-                                <option ${(requestScope.invoiceDetail.invoice.buyer.id==b.id)?"selected":""} 
+                                <option ${(requestScope.invoiceDetail.invoiceProduct.invoice.buyer.id==b.id)?"selected":""} 
                                     value="${b.id}">${b.name}</option>
                             </c:forEach>
                         </select>
@@ -58,7 +58,7 @@
                 <tr>
                     <td>Date</td>
                     <td><input type="date" name="date" 
-                               value="${requestScope.invoiceDetail.invoice.date}" required/></td>
+                               value="${requestScope.invoiceDetail.invoiceProduct.invoice.date}" required/></td>
                 </tr>
                 <tr>
                     <td>Price</td>
@@ -68,49 +68,50 @@
                 <tr>
                     <td>Quantity</td>
                     <td><input id="quantity" type="number" name="quantity" min="0" 
-                               value="${requestScope.invoiceDetail.invoiceProduct.quantity}" required/></td>
+                               value="${requestScope.invoiceDetail.invoiceProduct.quantity}" required/>
+                        <div style="color: red;" id="msg-quantity"></div>
+                    </td>
                 </tr>
-                <tr>
-                    <td>Discount</td>
-                    <td><input id="discount" type="number" name="discount" min="0" max="100" 
-                               value="${requestScope.invoiceDetail.invoiceProduct.discount}" required/></td>
-                </tr>
+
                 <tr>
                     <td>Amount</td>
                     <td><input id="amount" type="number" name="amount" 
-                               value="${requestScope.invoiceDetail.invoice.amount}" onclick="getAmount()" required/></td>
+                               value="${requestScope.invoiceDetail.invoiceProduct.invoice.amount}" onclick="getAmount()" required/></td>
                 </tr>
                 <tr>
                     <td>Paid</td>
                     <td><input id="paid" type="number" name="paid" min="0" 
-                               value="${requestScope.invoiceDetail.invoice.paid}" required/></td>
+                               value="${requestScope.invoiceDetail.invoiceProduct.invoice.paid}" required/>
+                        <div style="color: red;" id="msg-paid"></div>
+                    </td>
                 </tr>
                 <tr>
                     <td>Owed</td>
                     <td><input id="owed" type="number" name="owed" min="0" 
-                               value="${requestScope.invoiceDetail.invoice.owed}" onclick="getOwed()" required/></td>
+                               value="${requestScope.invoiceDetail.invoiceProduct.invoice.owed}" onclick="getOwed()" required/>
+                        <div style="color: red;" id="msg-owed"></div>
+                    </td>
                 </tr>
                 <tr>
                     <td>Name Agency</td>
                     <td>
                         <select name="idAgency">
                             <c:forEach items="${requestScope.agencies}" var="a">
-                                <option ${(requestScope.invoiceDetail.invoice.agency.id==a.id)?"selected":""} 
+                                <option ${(requestScope.invoiceDetail.invoiceProduct.invoice.agency.id==a.id)?"selected":""} 
                                     value="${a.id}">${a.name}</option>
                             </c:forEach>
                         </select>
                     </td>
                 </tr>
             </table>
-            <input type="submit" value="Save" onclick="return submitInvoice()"/>
+            <input type="submit" value="Save" onclick="return updateInvoice()"/>
         </form>
         <script>
             function getAmount() {
                 var price = document.getElementById("price");
                 var quantity = document.getElementById("quantity");
-                var discount = document.getElementById("discount");
                 var amount = document.getElementById("amount");
-                amount.value = Math.round((price.value * quantity.value) - (price.value * quantity.value * discount.value / 100));
+                amount.value = Math.round(price.value * quantity.value);
             }
 
             function getOwed() {
@@ -118,22 +119,38 @@
                 var paid = document.getElementById("paid");
                 var owed = document.getElementById("owed");
                 owed.value = amount.value - paid.value;
-            }
-            function submitInvoice() {
-                var submit = false;
-                var price = document.getElementById("price");
-                var quantity = document.getElementById("quantity");
-                var discount = document.getElementById("discount");
-                var amount = document.getElementById("amount");
-                var paid = document.getElementById("paid");
-                var owed = document.getElementById("owed");
-                if (paid.value <= amount.value
-                        && owed <= (amount.value - paid.value)) {
-                    submit = true;
-                } else {
-                    submit = false;
+                if(owed.value <= 0) {
+                    owed.value = 0;
                 }
-                return submit;
+            }
+            function updateInvoice() {
+                var price = document.getElementById("price").value;
+                var quantity = document.getElementById("quantity").value;
+                var amount = document.getElementById("amount").value;
+                var paid = document.getElementById("paid").value;
+                var owed = document.getElementById("owed").value;
+                if ((paid <= (Math.round(price * quantity)))
+                        && (owed <= (amount - paid))
+                        && quantity > 0) {
+                    return true;
+                } else {
+                    if(paid > amount) {
+                        document.getElementById("msg-paid").innerHTML = "Paid must <= "+ amount.value;
+                    } else {
+                        document.getElementById("msg-paid").innerHTML = "";
+                    }
+                    if(owed > (amount - paid) && (amount - paid) >= 0) {
+                        document.getElementById("msg-owed").innerHTML = "Owed must <= "+(amount - paid);
+                    } else {
+                        document.getElementById("msg-owed").innerHTML = "";
+                    }
+                    if(quantity <= 0) {
+                        document.getElementById("msg-quantity").innerHTML = "Quantity must > 0";
+                    } else {
+                        document.getElementById("msg-quantity").innerHTML = "";
+                    }
+                    return false;
+                }
             }
         </script>
     </body>

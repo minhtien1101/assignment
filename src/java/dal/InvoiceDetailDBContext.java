@@ -42,14 +42,14 @@ public class InvoiceDetailDBContext extends DBContext {
             if (idBuyer != -1) {
                 sql += " and idBuyer = ? \n";
             }
-            //----- new
+            
             if (idProduct != -1) {
                 sql += " and [ip].idProduct = ? \n";
             }
             if (idDimension != -1) {
                 sql += " and d.id = ? \n";
             }
-            //------------
+            
             sql += " ) invoiceDetail\n"
                     + "where row_index >= (?-1)*?+1 and row_index <= ? * ?";
             PreparedStatement stm = con.prepareStatement(sql);          
@@ -72,7 +72,7 @@ public class InvoiceDetailDBContext extends DBContext {
             if (dateFrom != null && dateTo != null && idBuyer != -1) {
                 stm.setInt(3, idBuyer);
             }
-            //---------
+            
             if(dateFrom == null && dateTo == null && idBuyer == -1 && idProduct != -1) {
                 stm.setInt(1, idProduct);
             }
@@ -137,7 +137,7 @@ public class InvoiceDetailDBContext extends DBContext {
                     && idDimension != -1) {
                 stm.setInt(5, idDimension);
             }
-            //---------
+            
             if (dateFrom == null && dateTo == null && idBuyer == -1 &&
                     idProduct == -1 && idDimension == -1) {
                 stm.setInt(1, pageIndex);
@@ -281,22 +281,7 @@ public class InvoiceDetailDBContext extends DBContext {
                 d.getInvoiceProduct().getInvoice().setAmount(rs.getLong("amount"));
                 d.getInvoiceProduct().getInvoice().setPaid(rs.getLong("paid"));
                 d.getInvoiceProduct().getInvoice().setOwed(rs.getLong("owed"));
-//                d.getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
-//                d.getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
-//                d.getInvoice().getBuyer().setPhone(rs.getString("phoneBuyer"));
-//                d.getInvoice().getBuyer().setDob(rs.getDate("dob"));
-//                d.getInvoice().getBuyer().setGender(rs.getBoolean("gender"));
-//                d.getInvoice().getBuyer().setAddress(rs.getString("addressBuyer"));
-//                d.getInvoice().getAgency().setId(rs.getInt("idAgency"));
-//                d.getInvoice().getAgency().setName(rs.getString("nameAgency"));
-//                d.getInvoice().getAgency().setPhone(rs.getString("phoneAgency"));
-//                d.getInvoice().getAgency().setAddress(rs.getString("addressAgency"));
-//                d.getInvoice().getAccount().setUsername(rs.getString("username"));
-//                d.getInvoice().setId(rs.getInt("idInvoice"));
-//                d.getInvoice().setDate(rs.getDate("date"));
-//                d.getInvoice().setAmount(rs.getLong("amount"));
-//                d.getInvoice().setPaid(rs.getLong("paid"));
-//                d.getInvoice().setOwed(rs.getLong("owed"));
+
                 d.getInvoiceProduct().getProductDetail().getDimension().setId(rs.getInt("idDimension"));
                 d.getInvoiceProduct().getProductDetail().getDimension().setName(rs.getString("nameDimension"));
                 d.getInvoiceProduct().getProductDetail().getProduct().setId(rs.getInt("idProduct"));
@@ -490,17 +475,11 @@ public class InvoiceDetailDBContext extends DBContext {
             stm_insert_invoice.setInt(5, invoiceDetail.getInvoiceProduct().getInvoice().getAgency().getId());
             stm_insert_invoice.setInt(6, invoiceDetail.getInvoiceProduct().getInvoice().getBuyer().getId());
             stm_insert_invoice.setString(7, invoiceDetail.getInvoiceProduct().getInvoice().getAccount().getUsername());
-//            stm_insert_invoice.setDate(1, invoiceDetail.getInvoice().getDate());
-//            stm_insert_invoice.setFloat(2, invoiceDetail.getInvoice().getAmount());
-//            stm_insert_invoice.setFloat(3, invoiceDetail.getInvoice().getPaid());
-//            stm_insert_invoice.setFloat(4, invoiceDetail.getInvoice().getOwed());
-//            stm_insert_invoice.setInt(5, invoiceDetail.getInvoice().getAgency().getId());
-//            stm_insert_invoice.setInt(6, invoiceDetail.getInvoice().getBuyer().getId());
-//            stm_insert_invoice.setString(7, invoiceDetail.getInvoice().getAccount().getUsername());
+
             stm_insert_invoice.executeUpdate();
 
             int idInvoice = 0;
-            // lữu trữ tạm bản ghi vừa insert và lấy id của bản ghi đó
+            
             String sql_idinvoice = "Select @@IDENTITY as id";
             PreparedStatement stm_getIdInvoice = con.prepareStatement(sql_idinvoice);
             ResultSet rs = stm_getIdInvoice.executeQuery();
@@ -513,11 +492,9 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "           ,[idProduct]\n"
                     + "           ,[idDimension]\n"
                     + "           ,[quantity]\n"
-                    + "           ,[buyPrice]\n"
-                    + "           ,[discount])\n"
+                    + "           ,[buyPrice])\n"
                     + "     VALUES\n"
                     + "           (?\n"
-                    + "           ,?\n"
                     + "           ,?\n"
                     + "           ,?\n"
                     + "           ,?\n"
@@ -529,7 +506,6 @@ public class InvoiceDetailDBContext extends DBContext {
             stm_insert_invoice_product.setInt(3, invoiceDetail.getInvoiceProduct().getProductDetail().getDimension().getId());
             stm_insert_invoice_product.setInt(4, invoiceDetail.getInvoiceProduct().getQuantity());
             stm_insert_invoice_product.setFloat(5, invoiceDetail.getInvoiceProduct().getBuyPrice());
-            stm_insert_invoice_product.setInt(6, invoiceDetail.getInvoiceProduct().getDiscount());
             stm_insert_invoice_product.executeUpdate();
             con.commit();
         } catch (SQLException ex) {
@@ -622,7 +598,6 @@ public class InvoiceDetailDBContext extends DBContext {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 InvoiceDetail d = new InvoiceDetail();
-                // sửa lại đang comment cái thuộc tính invoice ở invoicedetail
                 d.getInvoiceProduct().getInvoice().getBuyer().setId(rs.getInt("idBuyer"));
                 d.getInvoiceProduct().getInvoice().getBuyer().setName(rs.getString("nameBuyer"));
                 d.getInvoiceProduct().getInvoice().getAgency().setId(rs.getInt("idAgency"));
@@ -670,14 +645,6 @@ public class InvoiceDetailDBContext extends DBContext {
             stm_update_invoice.setInt(6, newInvoiceDetail.getInvoiceProduct().getInvoice().getBuyer().getId());
             stm_update_invoice.setString(7, newInvoiceDetail.getInvoiceProduct().getInvoice().getAccount().getUsername());
             stm_update_invoice.setInt(8, newInvoiceDetail.getInvoiceProduct().getInvoice().getId());
-//            stm_update_invoice.setDate(1, newInvoiceDetail.getInvoice().getDate());
-//            stm_update_invoice.setFloat(2, newInvoiceDetail.getInvoice().getAmount());
-//            stm_update_invoice.setFloat(3, newInvoiceDetail.getInvoice().getPaid());
-//            stm_update_invoice.setFloat(4, newInvoiceDetail.getInvoice().getOwed());
-//            stm_update_invoice.setInt(5, newInvoiceDetail.getInvoice().getAgency().getId());
-//            stm_update_invoice.setInt(6, newInvoiceDetail.getInvoice().getBuyer().getId());
-//            stm_update_invoice.setString(7, newInvoiceDetail.getInvoice().getAccount().getUsername());
-//            stm_update_invoice.setInt(8, newInvoiceDetail.getInvoice().getId());
             stm_update_invoice.executeUpdate();
             System.out.println("b1");
 
@@ -756,18 +723,14 @@ public class InvoiceDetailDBContext extends DBContext {
                     + "      ,[idDimension] = ?\n"
                     + "      ,[quantity] = ?\n"
                     + "      ,[buyPrice] = ?\n"
-                    + "      ,[discount] = ?\n"
                     + " WHERE [idInvoice] = ?";
             PreparedStatement stm_update_invoice_detail = con.prepareStatement(update_invoice_detail);
             stm_update_invoice_detail.setInt(1, newIdProduct);
             stm_update_invoice_detail.setInt(2, newIdDimension);
             stm_update_invoice_detail.setInt(3, quantityProduct);
             stm_update_invoice_detail.setFloat(4, newInvoiceDetail.getInvoiceProduct().getBuyPrice());
-            stm_update_invoice_detail.setFloat(5, newInvoiceDetail.getInvoiceProduct().getDiscount());
-//            stm_update_invoice_detail.setFloat(6, newInvoiceDetail.getInvoice().getId()); // đang đóng comment cái thuộc tính ở class invoicedetail
-            stm_update_invoice_detail.setFloat(6, newInvoiceDetail.getInvoiceProduct().getInvoice().getId());
+            stm_update_invoice_detail.setFloat(5, newInvoiceDetail.getInvoiceProduct().getInvoice().getId());
             stm_update_invoice_detail.executeUpdate();
-            System.out.println("b3");
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(InvoiceDetailDBContext.class.getName()).log(Level.SEVERE, null, ex);

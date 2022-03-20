@@ -52,6 +52,10 @@
         <servlet-name>UpdateOwedInvoiceController</servlet-name>
         <servlet-class>controller.UpdateOwedInvoiceController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RoleAccountController</servlet-name>
+        <servlet-class>controller.authentication.RoleAccountController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>UpdateOwedInvoiceController</servlet-name>
         <url-pattern>/updateowedinvoice</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoleAccountController</servlet-name>
+        <url-pattern>/role</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

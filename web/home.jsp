@@ -34,11 +34,12 @@
 
                     </div>
                     <ul class="user-menu">
+                        <li><a href="role">Set Role</a></li>
                         <li><a href="login">Log Out</a></li>
                     </ul>
                 </div>
             </div>
-                        
+
             <div class="content">
                 <div id="search" class="search">
                     <form action="home" method="GET">
@@ -65,9 +66,9 @@
                                 <option ${(idDimension == d.id)?"selected":""} value="${d.id}">${d.name}</option>
                             </c:forEach>
                         </select>
-                        
+
                         <input type="submit" value="Search">
-                        
+
                     </form>
                     <table>
                         <h2>List Of All Invoices</h2>
@@ -79,13 +80,13 @@
                             <td>Date</td>
                             <td>Price</td>
                             <td>Quantity</td>
-                            <td>Discount</td>
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Owed</td>
                             <td>Name Agent</td>
                             <td>Phone</td>
                             <td>Address</td>
+                            <td>Inserted By</td>
                             <td></td>
                         </tr>
 
@@ -98,26 +99,31 @@
                                 <td>${d.invoiceProduct.invoice.date}</td>
                                 <td>${d.invoiceProduct.buyPrice}</td>
                                 <td>${d.invoiceProduct.quantity}</td>
-                                <td>${d.invoiceProduct.discount}%</td>
                                 <td>${d.invoiceProduct.invoice.amount}</td>
                                 <td>${d.invoiceProduct.invoice.paid}</td>
                                 <td>${d.invoiceProduct.invoice.owed}</td>
                                 <td>${d.invoiceProduct.invoice.agency.name}</td>
                                 <td>${d.invoiceProduct.invoice.agency.phone}</td>
                                 <td>${d.invoiceProduct.invoice.agency.address}</td>
+                                <td>${d.invoiceProduct.invoice.account.username}</td>
                                 <td>
-                                    <a href="update?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}">
-                                        Update
-                                    </a> | 
-                                    <a href="delete?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}" onclick="return deleteInvoice()">
-                                        Delete
-                                    </a>
+                                    <button type="button">
+                                        <a href="update?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}">
+                                            Update
+                                        </a>
+                                    </button>
+                                            <div> | </div> 
+                                    <button type="button">
+                                        <a href="delete?idinvoice=${d.invoiceProduct.invoice.id}&idproduct=${d.invoiceProduct.productDetail.product.id}&iddimension=${d.invoiceProduct.productDetail.dimension.id}&quantity=${d.invoiceProduct.quantity}" onclick="return deleteInvoice()">
+                                            Delete
+                                        </a>
+                                    </button>
                                 </td>
                             </tr>
                         </c:forEach>
                     </table>
                     <div ${(requestScope.totalPage <= 1)?"style=\"display:none;\"":""} class="page">
-                        <input id="pageIndex" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/${requestScope.totalPage}
+                        <input type="number" id="pageIndex" min="1" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/${requestScope.totalPage}
                     </div>
                 </div>
             </div>

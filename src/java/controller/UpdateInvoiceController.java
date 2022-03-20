@@ -80,13 +80,11 @@ public class UpdateInvoiceController extends BaseAuthentication {
         String date_raw = request.getParameter("date");
         String buyPrice_raw = request.getParameter("buyPrice");
         String quantity_raw = request.getParameter("quantity");
-        String discount_raw = request.getParameter("discount");
         String amount_raw = request.getParameter("amount");
         String paid_raw = request.getParameter("paid");
         String owed_raw = request.getParameter("owed");
         String idAgency_raw = request.getParameter("idAgency");
         
-        // handling type data
         int idInvoice = Integer.parseInt(idInvoice_raw);
         int idBuyer = Integer.parseInt(idBuyer_raw);
         int idProduct = Integer.parseInt(idProduct_raw);
@@ -94,7 +92,6 @@ public class UpdateInvoiceController extends BaseAuthentication {
         Date date = Date.valueOf(date_raw);
         long buyPrice = Long.parseLong(buyPrice_raw);
         int quantity = Integer.parseInt(quantity_raw);
-        int discount = Integer.parseInt(discount_raw);
         long amount = Long.parseLong(amount_raw);
         long paid = Long.parseLong(paid_raw);
         long owed = Long.parseLong(owed_raw);
@@ -111,43 +108,31 @@ public class UpdateInvoiceController extends BaseAuthentication {
         newInvoiceDetail.getInvoiceProduct().getInvoice().getAgency().setId(idAgency);
         newInvoiceDetail.getInvoiceProduct().getInvoice().getAccount().setUsername(account.getUsername());
 
-//        newInvoiceDetail.getInvoice().setId(idInvoice);
-//        newInvoiceDetail.getInvoice().getBuyer().setId(idBuyer);
-//        newInvoiceDetail.getInvoice().setDate(date);
-//        newInvoiceDetail.getInvoice().setAmount(amount);
-//        newInvoiceDetail.getInvoice().setPaid(paid);
-//        newInvoiceDetail.getInvoice().setOwed(owed);
-//        newInvoiceDetail.getInvoice().getAgency().setId(idAgency);
-//        newInvoiceDetail.getInvoice().getAccount().setUsername(account.getUsername());
         newInvoiceDetail.getInvoiceProduct().getProductDetail().getProduct().setId(idProduct);
         newInvoiceDetail.getInvoiceProduct().getProductDetail().getDimension().setId(idDimension);
         newInvoiceDetail.getInvoiceProduct().setQuantity(quantity);
-        newInvoiceDetail.getInvoiceProduct().setDiscount(discount);
         newInvoiceDetail.getInvoiceProduct().setBuyPrice(buyPrice);
         
-        Integer oldIdProduct_raw = (Integer)request.getSession().getAttribute("idProduct");
-        Integer oldIdDimension_raw = (Integer)request.getSession().getAttribute("idDimension");
-        Integer oldQuantity_raw = (Integer)request.getSession().getAttribute("quantity");
-        int oldIdProduct = oldIdProduct_raw;
-        int oldIdDimension = oldIdDimension_raw;
-        int oldQuantity = oldQuantity_raw;
+        int oldIdProduct = (Integer)request.getSession().getAttribute("idProduct");
+        int oldIdDimension = (Integer)request.getSession().getAttribute("idDimension");
+        int oldQuantity = (Integer)request.getSession().getAttribute("quantity");
         
         // Products that have been purchased or not
-        ProductDetailDBContext productDdb = new ProductDetailDBContext();
-        boolean isExistOldProduct = productDdb.checkExistProduct(oldIdProduct, oldIdDimension);
+        ProductDetailDBContext productDetaildb = new ProductDetailDBContext();
+        boolean isExistOldProduct = productDetaildb.checkExistProduct(oldIdProduct, oldIdDimension);
         int oldTotalQuantity;
         if(isExistOldProduct) {
 
-            oldTotalQuantity = productDdb.getTotalQuantity(oldIdProduct, oldIdDimension) - oldQuantity;
+            oldTotalQuantity = productDetaildb.getTotalQuantity(oldIdProduct, oldIdDimension) - oldQuantity;
         } else {
             oldTotalQuantity = 0;
         }
-        boolean isExistNewProduct = productDdb.checkExistProduct(idProduct, idDimension);
+        boolean isExistNewProduct = productDetaildb.checkExistProduct(idProduct, idDimension);
         
         int newTotalQuantity;
         if(isExistNewProduct) {
 
-            newTotalQuantity = productDdb.getTotalQuantity(idProduct, idDimension);
+            newTotalQuantity = productDetaildb.getTotalQuantity(idProduct, idDimension);
         } else {
             newTotalQuantity = 0;
         }

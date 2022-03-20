@@ -34,6 +34,7 @@
 
                     </div>
                     <ul class="user-menu">
+                        <li><a href="role">Set Role</a></li>
                         <li><a href="login">Log Out</a></li>
                     </ul>
                 </div>
@@ -77,13 +78,14 @@
                             <td>Date</td>
                             <td>Price</td>
                             <td>Quantity</td>
-                            <td>Discount</td>
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Owed</td>
                             <td>Name Agency</td>
                             <td>Phone</td>
                             <td>Address</td>
+                            <td>Inserted By</td>
+                            <td></td>
                         </tr>
                         <c:forEach items="${requestScope.invoicesDetailOwed}" var="iv">
                             <tr>
@@ -94,13 +96,13 @@
                                 <td>${iv.invoiceProduct.invoice.date}</td>
                                 <td>${iv.invoiceProduct.buyPrice}</td>
                                 <td>${iv.invoiceProduct.quantity}</td>
-                                <td>${iv.invoiceProduct.discount}%</td>
                                 <td>${iv.invoiceProduct.invoice.amount}</td>
                                 <td>${iv.invoiceProduct.invoice.paid}</td>
                                 <td>${iv.invoiceProduct.invoice.owed}</td>
                                 <td>${iv.invoiceProduct.invoice.agency.name}</td>
                                 <td>${iv.invoiceProduct.invoice.agency.phone}</td>
                                 <td>${iv.invoiceProduct.invoice.agency.address}</td>
+                                <td>${iv.invoiceProduct.invoice.account.username}</td>
                                 <td>
                                     <button>
                                         <a href="updateowedinvoice?idinvoice=${iv.invoiceProduct.invoice.id}&amount=${iv.invoiceProduct.invoice.amount}">
@@ -112,8 +114,7 @@
                         </c:forEach>
                     </table>
                         <div ${(requestScope.totalPage <= 1)?"style=\"display:none;\"":""} class="page">
-                        <input ${(requestScope.totalPage <= 1)?"type=\"hidden\"":"type=\"text\""} id="pageIndex"  value="${requestScope.pageIndex}" 
-                                                                                                  onkeyup="keyUp(event)">/${requestScope.totalPage}
+                            <input id="pageIndex" type="number" min="1" value="${requestScope.pageIndex}" onkeyup="keyUp(event)">/${requestScope.totalPage}
                     </div>
                 </div>
             </div>

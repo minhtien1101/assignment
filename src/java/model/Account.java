@@ -5,8 +5,10 @@ public class Account {
     private String username;
     private String password;
     private String displayname;
+    private Role role;
 
     public Account() {
+        role = new Role();
     }
 
     public String getUsername() {
@@ -31,6 +33,14 @@ public class Account {
 
     public void setDisplayname(String displayname) {
         this.displayname = displayname;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 
