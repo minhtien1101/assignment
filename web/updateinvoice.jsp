@@ -129,13 +129,13 @@
                 var amount = document.getElementById("amount").value;
                 var paid = document.getElementById("paid").value;
                 var owed = document.getElementById("owed").value;
-                if ((paid <= (Math.round(price * quantity)))
+                if ((paid <= amount)
                         && (owed <= (amount - paid))
                         && quantity > 0) {
                     return true;
                 } else {
                     if(paid > amount) {
-                        document.getElementById("msg-paid").innerHTML = "Paid must <= "+ amount.value;
+                        document.getElementById("msg-paid").innerHTML = "Paid must <= "+ amount;
                     } else {
                         document.getElementById("msg-paid").innerHTML = "";
                     }
